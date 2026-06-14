@@ -1,5 +1,5 @@
 /**
- * redaction.js
+ * redaction.js 
  * ------------
  * Client-side mirror of the backend redaction_engine.py.
  * Detects PHI/PII via regex rules + a naive name heuristic,
@@ -8,7 +8,7 @@
  *
  * This lets the frontend demo run standalone without a backend,
  * while staying structurally identical to the Python pipeline
- * so the two can be swapped later.
+ * so the two can  be swapped later.
  */
 
 const REGEX_RULES = [
