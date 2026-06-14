@@ -3,7 +3,7 @@
  * ------
  * Wires up the dashboard: navigation between views, the redaction
  * flow (run redaction -> show token map -> simulate AI call ->
- * restore identities), the vault session table, and the audit log.
+ * restore identities), the vault session table,  the audit log.
  */
 
 // ---------------------------------------------------------------
