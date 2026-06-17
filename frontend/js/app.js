@@ -9,7 +9,7 @@ const BACKEND_URL    = "http://localhost:5000/api";
 const ANTHROPIC_KEY  = window.ANTHROPIC_KEY; // paste your key here
 
 // ─────────────────────────────────────────────────────────────────
-
+  
 // ── Navigation ───────────────────────────────────────────────────
 document.querySelectorAll(".nav-item").forEach((item) => {
   item.addEventListener("click", (e) => {
