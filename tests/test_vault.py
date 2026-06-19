@@ -85,7 +85,7 @@ def test_clear_session(vault):
     # Keys should exist
     assert vault.redis.keys(f"{session_id}:*")
     
-    # Clear
+    # Clear.
     removed = vault.clear_session(session_id)
     assert removed > 0
     assert not vault.redis.keys(f"{session_id}:*")
