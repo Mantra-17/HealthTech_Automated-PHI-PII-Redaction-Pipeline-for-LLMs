@@ -8,15 +8,8 @@ const USE_BACKEND    = false;
 const BACKEND_URL    = "http://localhost:5000/api";
 const ANTHROPIC_KEY  = window.ANTHROPIC_KEY; // paste your key here
 
-/*const ANTHROPIC_KEY  = "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"; // paste your key here
-*/
 // ─────────────────────────────────────────────────────────────────
-
-
-
-
-// ─────────────────────────────────────────────────────────────────
-
+  
 // ── Navigation ───────────────────────────────────────────────────
 document.querySelectorAll(".nav-item").forEach((item) => {
   item.addEventListener("click", (e) => {
