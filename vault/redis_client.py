@@ -29,14 +29,16 @@ class RedisClient:
 
         # Build connection pool
         try:
-            self.pool = redis.ConnectionPool(
-                host=self.host,
-                port=self.port,
-                db=self.db,
-                password=self.password,
-                decode_responses=True,
-                ssl=self.ssl,
-            )
+            pool_kwargs = {
+                "host": self.host,
+                "port": self.port,
+                "db": self.db,
+                "password": self.password,
+                "decode_responses": True,
+            }
+            if self.ssl:
+                pool_kwargs["ssl"] = True
+            self.pool = redis.ConnectionPool(**pool_kwargs)
             self.client = redis.Redis(connection_pool=self.pool)
         except Exception as e:
             logger.exception("Failed to create Redis connection pool: %s", e)

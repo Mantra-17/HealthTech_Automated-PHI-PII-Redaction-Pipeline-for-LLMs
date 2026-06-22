@@ -7,6 +7,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 def test_storage_workflow():
     """
     Day 3 & 6 Task: Store 5 mappings, retrieve them, and verify correctness.
+    Updated to support session-scoped token store operations.
     """
     print("--- Starting Vault Storage Workflow Test ---")
     
@@ -16,6 +17,7 @@ def test_storage_workflow():
     redis_client.flushdb() 
     
     store = TokenStore(redis_client)
+    session_id = "session_test_123"
 
     # 1. Store 5 sample mappings
     samples = [
@@ -26,17 +28,17 @@ def test_storage_workflow():
         ("PATIENT", "John Smith") # Duplicate to test consistency
     ]
 
-    print("\n[Phase 1] Storing Mappings...")
+    print(f"\n[Phase 1] Storing Mappings for session '{session_id}'...")
     tokens = []
     for entity_type, name in samples:
-        token = store.get_or_create_token(entity_type, name)
+        token = store.get_or_create_token(session_id, entity_type, name)
         tokens.append(token)
         print(f"Stored: {name} -> {token}")
 
     # 2. Retrieve all mappings to verify correctness
     print("\n[Phase 2] Retrieving original names from tokens...")
     for token in set(tokens): # Use set to get unique tokens
-        original_name = store.get_name_from_token(token)
+        original_name = store.get_name_from_token(session_id, token)
         print(f"Retrieved: {token} -> {original_name}")
 
     # 3. Verify John Smith received the exact same token both times
