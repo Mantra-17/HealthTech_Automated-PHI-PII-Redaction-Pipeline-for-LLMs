@@ -14,7 +14,7 @@ class TextEngine:
     def redact(text: str, entities: List[Dict[str, str]]) -> str:
         """
         Replaces identified entities with their tokens in the text.
-        Handles duplicates natively by replacing all occurrences.
+        Handles duplicates and collisions by sequentially mapping multiple occurrences.
         Sorts entities by length (descending) to avoid partial replacement of overlapping entities.
         """
         if not text or not entities:
@@ -25,27 +25,43 @@ class TextEngine:
         # Sort by length descending to replace "John Smith" before "John"
         sorted_entities = sorted(entities, key=lambda x: len(x.get("text", "")), reverse=True)
         
-        # Keep track of replaced tokens to avoid double replacement if a token resembles an entity
+        # Group tokens by their entity text to maintain order of occurrence
+        text_to_tokens = {}
         for entity in sorted_entities:
             entity_text = entity.get("text")
             token = entity.get("token")
-            
             if not entity_text or not token:
                 continue
-                
-            # Use regex with word boundaries if the entity starts/ends with alphanumeric characters
-            # Otherwise, just use string replacement (for entities with special chars)
+            if entity_text not in text_to_tokens:
+                text_to_tokens[entity_text] = []
+            text_to_tokens[entity_text].append(token)
+
+        # Replace each occurrence with its corresponding token in order
+        for entity_text, tokens in text_to_tokens.items():
             escaped_text = re.escape(entity_text)
             
             if entity_text[0].isalnum() and entity_text[-1].isalnum():
                 pattern = r'\b' + escaped_text + r'\b'
-                try:
-                    redacted_text = re.sub(pattern, token, redacted_text)
-                except re.error as e:
-                    logger.error(f"Regex error for {entity_text}: {e}")
-                    redacted_text = redacted_text.replace(entity_text, token)
             else:
-                redacted_text = redacted_text.replace(entity_text, token)
+                pattern = escaped_text
+                
+            match_index = 0
+            def replace_match(match):
+                nonlocal match_index
+                if match_index < len(tokens):
+                    tok = tokens[match_index]
+                else:
+                    tok = tokens[-1]
+                match_index += 1
+                return tok
+
+            try:
+                redacted_text = re.sub(pattern, replace_match, redacted_text)
+            except re.error as e:
+                logger.error(f"Regex error for {entity_text}: {e}")
+                # Fallback string replace (does not support count/index-based cleanly, but safe fallback)
+                for tok in tokens:
+                    redacted_text = redacted_text.replace(entity_text, tok, 1)
                 
         return redacted_text
 
