@@ -246,7 +246,7 @@ pytest tests/test_regex.py -v
 |------|------|--------|----------------|
 | **Mantra** 👑 | Team Lead | `regex/` | Regex-based PHI pattern scanner & redactor |
 | **Tirth** | Intern | `nlp/` | Presidio + spaCy NLP entity detection pipeline |
-| **Jash** | Intern | `vault/` | Pseudonymization engine & Redis token vault |
+| **Jash** | Intern | `vault/` | Vault Engine: Pseudonymization, Session Isolation & Redis Optimization |
 | **Rohit** | Intern | `api/` | FastAPI proxy service & audit logging |
 
 **Organization:** [Infotact Solutions](https://github.com/InfotactSolutions)  
