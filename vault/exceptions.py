@@ -9,3 +9,4 @@ class TokenNotFoundError(VaultError):
 class VaultConfigurationError(VaultError):
     """Raised when the Vault is misconfigured."""
     pass
+    

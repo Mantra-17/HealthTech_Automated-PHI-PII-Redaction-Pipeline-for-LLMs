@@ -1,6 +1,6 @@
 import re
 import logging
-from typing import Dict
+from typing import Dict,Any
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +17,7 @@ class RiskAnalyzer:
         "PHONE": r"\b\d{3}[-.\s]??\d{3}[-.\s]??\d{4}\b",
         # Matches any date format looking like MM/DD/YYYY, MM-DD-YYYY
         "DATE": r"\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b",
+        "AADHAAR": r"\b\d{4}\s\d{4}\s\d{4}\b",
     }
 
     @classmethod
