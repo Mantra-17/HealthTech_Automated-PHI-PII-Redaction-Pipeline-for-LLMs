@@ -52,6 +52,8 @@ REDACTION_LABELS: dict[str, str] = {
     "url": "[URL_REDACTED]",
     "pin": "[PIN_REDACTED]",
     "zip": "[ZIP_REDACTED]",
+    "insurance": "[INSURANCE_REDACTED]",
+    "license": "[LICENSE_REDACTED]",
 }
 
 
@@ -200,6 +202,12 @@ INDIAN_PIN_REGEX = r"(?<!\d)[1-9]\d{5}(?!\d)"
 #   90210-1234  → ZIP+4 format with a dash after the first five digits
 US_ZIP_REGEX = r"\b\d{5}(?:-\d{4})?\b"
 
+# Matches Insurance IDs (e.g. INS-789012-A, INS-12345-B)
+INSURANCE_REGEX = r"\bINS-\d+-[A-Za-z0-9]+\b"
+
+# Matches License numbers (e.g. MH-2024-7890, DL-2026-12345)
+LICENSE_REGEX = r"\b[A-Za-z]{2,3}-\d{4}-\d{3,8}\b"
+
 
 # ---------------------------------------------------------------------------
 # Helper: build findings from a regex
@@ -294,6 +302,16 @@ def detect_us_zips(text: str) -> list[MatchFinding]:
     return _find_matches(text, US_ZIP_REGEX, "zip")
 
 
+def detect_insurance(text: str) -> list[MatchFinding]:
+    """Find all Insurance ID matches and their positions."""
+    return _find_matches(text, INSURANCE_REGEX, "insurance")
+
+
+def detect_license(text: str) -> list[MatchFinding]:
+    """Find all License number matches and their positions."""
+    return _find_matches(text, LICENSE_REGEX, "license")
+
+
 # ---------------------------------------------------------------------------
 # Redaction functions (one per PHI/PII category)
 # ---------------------------------------------------------------------------
@@ -353,6 +371,16 @@ def redact_us_zips(text: str) -> tuple[str, list[MatchFinding]]:
     return _apply_redaction(text, REDACTION_LABELS["zip"], US_ZIP_REGEX)
 
 
+def redact_insurance(text: str) -> tuple[str, list[MatchFinding]]:
+    """Replace Insurance IDs with [INSURANCE_REDACTED]."""
+    return _apply_redaction(text, REDACTION_LABELS["insurance"], INSURANCE_REGEX)
+
+
+def redact_license(text: str) -> tuple[str, list[MatchFinding]]:
+    """Replace License numbers with [LICENSE_REDACTED]."""
+    return _apply_redaction(text, REDACTION_LABELS["license"], LICENSE_REGEX)
+
+
 # ---------------------------------------------------------------------------
 # Overlap resolution
 # ---------------------------------------------------------------------------
@@ -365,6 +393,8 @@ _PATTERN_PRIORITY: dict[str, int] = {
     "ip": 85,
     "aadhaar": 80,
     "ssn": 75,
+    "insurance": 74,
+    "license": 72,
     "mrn": 70,
     "phone": 65,
     "date": 60,
@@ -449,6 +479,8 @@ def scan_and_redact(text: str) -> ScanResult:
     all_findings.extend(detect_aadhaar(text))
     all_findings.extend(detect_ssns(text))
     all_findings.extend(detect_mrns(text))
+    all_findings.extend(detect_insurance(text))
+    all_findings.extend(detect_license(text))
     all_findings.extend(detect_indian_phones(text))
     all_findings.extend(detect_us_phones(text))
     all_findings.extend(detect_dates(text))

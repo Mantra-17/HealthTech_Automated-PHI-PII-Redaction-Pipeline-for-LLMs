@@ -22,6 +22,8 @@ class ViewSettings extends HTMLElement {
           <label class="toggle"><input type="checkbox" checked disabled /><span>MRN / patient IDs</span></label>
           <label class="toggle"><input type="checkbox" checked disabled /><span>Addresses</span></label>
           <label class="toggle"><input type="checkbox" checked disabled /><span>Aadhaar / SSN</span></label>
+          <label class="toggle"><input type="checkbox" checked disabled /><span>Insurance IDs</span></label>
+          <label class="toggle"><input type="checkbox" checked disabled /><span>License numbers</span></label>
         </div>
         <p class="note">These map directly to the regex + NLP rules implemented in <code>redaction_engine.py</code>. Toggles are illustrative for this demo build.</p>
       </div>
