@@ -19,6 +19,8 @@ const REGEX_RULES = [
   { category: "SSN", pattern: /\b\d{3}-\d{2}-\d{4}\b/g },
   { category: "AADHAAR", pattern: /\b\d{4}\s\d{4}\s\d{4}\b/g },
   { category: "ADDRESS", pattern: /\b\d{1,5}\s[A-Za-z0-9.\s]{3,30}(?:Street|St|Road|Rd|Avenue|Ave|Lane|Ln|Colony|Nagar)\b/gi },
+  { category: "INSURANCE", pattern: /\bINS-\d+-[A-Za-z0-9]+\b/gi },
+  { category: "LICENSE", pattern: /\b[A-Za-z]{2,3}-\d{4}-\d{3,8}\b/gi },
 ];
 
 const NAME_PATTERN = /\b(?:Mr|Mrs|Ms|Dr|Patient)\.?\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)\b/g;
@@ -80,24 +82,42 @@ function redact(text) {
   const entities = detectEntities(text);
   const tokenMap = {};
   const counters = {};
+  const valueToPseudonym = {};
 
   let cleanText = text;
   // Work right-to-left so earlier offsets stay valid
   for (const e of [...entities].reverse()) {
-    counters[e.category] = (counters[e.category] || 0) + 1;
+    const key = `${e.original.trim().toLowerCase()}:${e.category}`;
     let pseudonym;
-    if (e.category === "NAME") {
-      const idx = counters[e.category] - 1;
-      const label = idx < 26 ? String.fromCharCode(65 + idx) : String(idx);
-      pseudonym = `Patient ${label}`;
+    if (valueToPseudonym[key]) {
+      pseudonym = valueToPseudonym[key];
     } else {
-      pseudonym = `${e.category}_${counters[e.category]}`;
+      counters[e.category] = (counters[e.category] || 0) + 1;
+      if (e.category === "NAME") {
+        const idx = counters[e.category] - 1;
+        const label = idx < 26 ? String.fromCharCode(65 + idx) : String(idx);
+        pseudonym = `Patient ${label}`;
+      } else {
+        pseudonym = `${e.category}_${counters[e.category]}`;
+      }
+      valueToPseudonym[key] = pseudonym;
     }
     tokenMap[pseudonym] = e.original;
     cleanText = cleanText.slice(0, e.start) + pseudonym + cleanText.slice(e.end);
   }
 
-  return { cleanText, tokenMap, entities };
+  // Deduplicate entities returned to client
+  const seen = new Set();
+  const uniqueEntities = [];
+  for (const e of entities) {
+    const key = `${e.original.trim().toLowerCase()}:${e.category}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      uniqueEntities.push(e);
+    }
+  }
+
+  return { cleanText, tokenMap, entities: uniqueEntities };
 }
 
 /**

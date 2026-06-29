@@ -10,8 +10,11 @@ organizations, and locations).
 from __future__ import annotations
 
 import os
+import re
+import time
+import logging
 from typing import TypedDict
-from presidio_analyzer import AnalyzerEngine
+from presidio_analyzer import AnalyzerEngine, Pattern, PatternRecognizer
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities import OperatorConfig
 
@@ -32,6 +35,57 @@ class ScanResult(TypedDict):
     findings: list[MatchFinding]
     total_phi_found: int
     redaction_summary: dict[str, int]
+    nlp_duration_ms: float
+
+
+# ---------------------------------------------------------------------------
+# Clinical Header & Eponym Filter (Precision Improvement)
+# ---------------------------------------------------------------------------
+
+# Common clinical eponyms that shouldn't be flagged as PERSON names
+EPONYMS = {
+    "parkinson", "alzheimer", "crohn", "hodgkin", "huntington", 
+    "down", "grave", "tourette", "asperger", "meniere", "wilson"
+}
+
+# Clinical metadata headers that frequently cause NER false positives (e.g. classified as ORG or PERSON)
+HEADERS_TO_EXCLUDE = {
+    "dob", "mrn", "ssn", "ip", "email", "aadhaar", "phone", 
+    "address", "cell", "name", "contact", "portal", "residence",
+    "backup", "mobile", "physician", "doctor", "patient", "license",
+    "hospital", "clinic", "ward", "date", "status", "chief", "complaint",
+    "history", "treatment", "discharged", "admitted", "review", "clinical", "note",
+    "us", "er", "ent"
+}
+
+def is_false_positive(word: str, entity_type: str) -> bool:
+    """
+    Checks if a detected word is a false positive based on clinical context and clean name rules.
+    """
+    word_clean = word.strip().lower()
+    
+    # Strip common non-alphanumeric punctuation from borders (e.g. "SSN:" -> "ssn")
+    word_alphanumeric = re.sub(r'^[^a-z0-9]+|[^a-z0-9]+$', '', word_clean)
+    
+    # Rule 1: Exclude common clinical headers/meta-terms from PERSON, ORGANIZATION, and LOCATION
+    if entity_type in ("PERSON", "ORGANIZATION", "LOCATION"):
+        if word_alphanumeric in HEADERS_TO_EXCLUDE or word_clean in HEADERS_TO_EXCLUDE:
+            return True
+            
+    # Rule 2: Specific validation for PERSON names
+    if entity_type == "PERSON":
+        # Person names should not contain numbers or clinical symbols
+        if any(char.isdigit() or char in "+@/\\:#_[]=" for char in word):
+            return True
+        # Person names should not contain known disease eponyms (e.g. "Parkinson's disease")
+        for ep in EPONYMS:
+            if ep in word_clean:
+                return True
+        # Person names are usually longer than a single character
+        if len(word_alphanumeric) <= 1:
+            return True
+            
+    return False
 
 
 # ---------------------------------------------------------------------------
@@ -54,6 +108,32 @@ class PresidioScanner:
         # Initialize the Analyzer and Anonymizer engines
         self.analyzer = AnalyzerEngine(nlp_engine=nlp_engine)
         self.anonymizer = AnonymizerEngine()
+
+        # Add custom recognizer for Insurance IDs
+        insurance_pattern = Pattern(
+            name="insurance_id_pattern",
+            regex=r"\bINS-\d+-[A-Za-z0-9]+\b",
+            score=0.95
+        )
+        insurance_recognizer = PatternRecognizer(
+            supported_entity="INSURANCE_ID",
+            patterns=[insurance_pattern],
+            context=["insurance", "policy", "plan", "subscriber"]
+        )
+        self.analyzer.registry.add_recognizer(insurance_recognizer)
+
+        # Add custom recognizer for Professional/Medical/State License numbers
+        license_pattern = Pattern(
+            name="license_number_pattern",
+            regex=r"\b[A-Za-z]{2,3}-\d{4}-\d{3,8}\b",
+            score=0.95
+        )
+        license_recognizer = PatternRecognizer(
+            supported_entity="LICENSE_NUMBER",
+            patterns=[license_pattern],
+            context=["license", "licence", "registration", "cert", "doctor", "physician"]
+        )
+        self.analyzer.registry.add_recognizer(license_recognizer)
         
         # Mapping Presidio entities to our standard label formats
         self.redaction_labels = {
@@ -68,17 +148,24 @@ class PresidioScanner:
             "ORGANIZATION": "[ORGANIZATION_REDACTED]",
             "US_DRIVER_LICENSE": "[LICENSE_REDACTED]",
             "MEDICAL_LICENSE": "[LICENSE_REDACTED]",
+            "INSURANCE_ID": "[INSURANCE_REDACTED]",
+            "LICENSE_NUMBER": "[LICENSE_REDACTED]",
         }
 
     def scan_and_redact(self, text: str) -> ScanResult:
         """
         Scan text for PII/PHI using Presidio (with spaCy NER) and redact it.
         """
+        start_time = time.perf_counter()
         # 1. Analyze text to find PII entities
         raw_results = self.analyzer.analyze(text=text, language="en")
         
-        # Filter analyzer results to only include those we explicitly support
-        analyzer_results = [r for r in raw_results if r.entity_type in self.redaction_labels]
+        # Filter analyzer results to only include those we explicitly support and are not false positives
+        analyzer_results = [
+            r for r in raw_results 
+            if r.entity_type in self.redaction_labels
+            and not is_false_positive(text[r.start:r.end], r.entity_type)
+        ]
         
         # 2. Extract findings matching the standard structure
         findings: list[MatchFinding] = []
@@ -115,11 +202,16 @@ class PresidioScanner:
             operators=operators
         )
         
+        duration_ms = (time.perf_counter() - start_time) * 1000
+        logger = logging.getLogger(__name__)
+        logger.info(f"NLP Presidio scan completed in {duration_ms:.2f} ms")
+        
         return {
             "redacted_text": anonymized_result.text,
             "findings": sorted(findings, key=lambda f: f["start"]),
             "total_phi_found": len(findings),
-            "redaction_summary": summary
+            "redaction_summary": summary,
+            "nlp_duration_ms": duration_ms
         }
 
 
