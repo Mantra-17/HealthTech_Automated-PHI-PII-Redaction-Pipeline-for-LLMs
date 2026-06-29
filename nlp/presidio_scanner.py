@@ -10,6 +10,7 @@ organizations, and locations).
 from __future__ import annotations
 
 import os
+import re
 import time
 import logging
 from typing import TypedDict
@@ -35,6 +36,56 @@ class ScanResult(TypedDict):
     total_phi_found: int
     redaction_summary: dict[str, int]
     nlp_duration_ms: float
+
+
+# ---------------------------------------------------------------------------
+# Clinical Header & Eponym Filter (Precision Improvement)
+# ---------------------------------------------------------------------------
+
+# Common clinical eponyms that shouldn't be flagged as PERSON names
+EPONYMS = {
+    "parkinson", "alzheimer", "crohn", "hodgkin", "huntington", 
+    "down", "grave", "tourette", "asperger", "meniere", "wilson"
+}
+
+# Clinical metadata headers that frequently cause NER false positives (e.g. classified as ORG or PERSON)
+HEADERS_TO_EXCLUDE = {
+    "dob", "mrn", "ssn", "ip", "email", "aadhaar", "phone", 
+    "address", "cell", "name", "contact", "portal", "residence",
+    "backup", "mobile", "physician", "doctor", "patient", "license",
+    "hospital", "clinic", "ward", "date", "status", "chief", "complaint",
+    "history", "treatment", "discharged", "admitted", "review", "clinical", "note",
+    "us", "er", "ent"
+}
+
+def is_false_positive(word: str, entity_type: str) -> bool:
+    """
+    Checks if a detected word is a false positive based on clinical context and clean name rules.
+    """
+    word_clean = word.strip().lower()
+    
+    # Strip common non-alphanumeric punctuation from borders (e.g. "SSN:" -> "ssn")
+    word_alphanumeric = re.sub(r'^[^a-z0-9]+|[^a-z0-9]+$', '', word_clean)
+    
+    # Rule 1: Exclude common clinical headers/meta-terms from PERSON, ORGANIZATION, and LOCATION
+    if entity_type in ("PERSON", "ORGANIZATION", "LOCATION"):
+        if word_alphanumeric in HEADERS_TO_EXCLUDE or word_clean in HEADERS_TO_EXCLUDE:
+            return True
+            
+    # Rule 2: Specific validation for PERSON names
+    if entity_type == "PERSON":
+        # Person names should not contain numbers or clinical symbols
+        if any(char.isdigit() or char in "+@/\\:#_[]=" for char in word):
+            return True
+        # Person names should not contain known disease eponyms (e.g. "Parkinson's disease")
+        for ep in EPONYMS:
+            if ep in word_clean:
+                return True
+        # Person names are usually longer than a single character
+        if len(word_alphanumeric) <= 1:
+            return True
+            
+    return False
 
 
 # ---------------------------------------------------------------------------
@@ -109,8 +160,12 @@ class PresidioScanner:
         # 1. Analyze text to find PII entities
         raw_results = self.analyzer.analyze(text=text, language="en")
         
-        # Filter analyzer results to only include those we explicitly support
-        analyzer_results = [r for r in raw_results if r.entity_type in self.redaction_labels]
+        # Filter analyzer results to only include those we explicitly support and are not false positives
+        analyzer_results = [
+            r for r in raw_results 
+            if r.entity_type in self.redaction_labels
+            and not is_false_positive(text[r.start:r.end], r.entity_type)
+        ]
         
         # 2. Extract findings matching the standard structure
         findings: list[MatchFinding] = []
