@@ -31,9 +31,9 @@ proxy_bp = Blueprint("proxy", __name__)
 try:
     redis_client = RedisClient().get_client()
     redis_client.ping()
-    print("✅ Vault Proxy: connected to real Redis")
+    print("[SUCCESS] Vault Proxy: connected to real Redis")
 except Exception as e:
-    print(f"⚠️  Vault Proxy: Redis unavailable ({e}), falling back to fakeredis")
+    print(f"[WARNING] Vault Proxy: Redis unavailable ({e}), falling back to fakeredis")
     redis_client = fakeredis.FakeStrictRedis(decode_responses=True)
 
 # Initialize Vault facade and Presidio NLP scanner
@@ -41,9 +41,9 @@ real_vault = RealVault(redis_client, ttl_seconds=1800)
 
 try:
     nlp_scanner = PresidioScanner()
-    print("✅ Vault Proxy: Presidio NLP scanner initialized successfully")
+    print("[SUCCESS] Vault Proxy: Presidio NLP scanner initialized successfully")
 except Exception as e:
-    print(f"⚠️  Vault Proxy: Failed to initialize Presidio NLP scanner ({e})")
+    print(f"[WARNING] Vault Proxy: Failed to initialize Presidio NLP scanner ({e})")
     nlp_scanner = None
 
 

@@ -1,61 +1,66 @@
 # PHI Redaction Detection Report
 
-This report documents the detailed numbers, categories, and positions of all Protected Health Information (PHI) entities detected across the 15 clinical notes.
+This report documents the detailed numbers, categories, and positions of all Protected Health Information (PHI) entities detected across the 20 clinical notes.
 
 ## 1. High-Level Summary Metrics
 
-* **Total Notes Scanned:** 15
-* **Total PHI Ground Truth Items:** 211
-* **Total Entities Detected:** 194
-* **True Positives (TP):** 194
-* **False Positives (FP):** 0
-* **False Negatives (FN):** 17
-* **Global Precision:** 100.00%
-* **Global Recall:** 91.94%
-* **Global F1-Score:** 95.80%
+* **Total Notes Scanned:** 20
+* **Total PHI Ground Truth Items:** 246
+* **Total Entities Detected:** 232
+* **True Positives (TP):** 226
+* **False Positives (FP):** 6
+* **False Negatives (FN):** 20
+* **Global Precision:** 97.41%
+* **Global Recall:** 91.87%
+* **Global F1-Score:** 94.56%
 
 ## 2. Global Entity Class Frequencies
 
 | Entity Category | Count Detected | Description / Mapped Types |
 | :--- | :---: | :--- |
-| **PERSON** | 40 | Mapped to de-identification pipeline standard |
-| **DATE** | 30 | Mapped to de-identification pipeline standard |
-| **PHONE** | 20 | Mapped to de-identification pipeline standard |
-| **EMAIL** | 15 | Mapped to de-identification pipeline standard |
-| **MRN** | 14 | Mapped to de-identification pipeline standard |
-| **US_DRIVER_LICENSE** | 14 | Mapped to de-identification pipeline standard |
-| **LOCATION** | 12 | Mapped to de-identification pipeline standard |
+| **PERSON** | 53 | Mapped to de-identification pipeline standard |
+| **DATE** | 35 | Mapped to de-identification pipeline standard |
+| **PHONE** | 21 | Mapped to de-identification pipeline standard |
+| **EMAIL** | 17 | Mapped to de-identification pipeline standard |
+| **US_DRIVER_LICENSE** | 16 | Mapped to de-identification pipeline standard |
+| **MRN** | 15 | Mapped to de-identification pipeline standard |
+| **LOCATION** | 15 | Mapped to de-identification pipeline standard |
+| **ORGANIZATION** | 11 | Mapped to de-identification pipeline standard |
+| **DATE_TIME** | 9 | Mapped to de-identification pipeline standard |
+| **SSN** | 8 | Mapped to de-identification pipeline standard |
+| **URL** | 8 | Mapped to de-identification pipeline standard |
 | **AADHAAR** | 7 | Mapped to de-identification pipeline standard |
-| **SSN** | 7 | Mapped to de-identification pipeline standard |
-| **URL** | 7 | Mapped to de-identification pipeline standard |
-| **DATE_TIME** | 7 | Mapped to de-identification pipeline standard |
-| **ORGANIZATION** | 6 | Mapped to de-identification pipeline standard |
-| **IP** | 5 | Mapped to de-identification pipeline standard |
-| **PHONE_NUMBER** | 4 | Mapped to de-identification pipeline standard |
+| **IP** | 6 | Mapped to de-identification pipeline standard |
+| **PHONE_NUMBER** | 6 | Mapped to de-identification pipeline standard |
 | **US_SSN** | 2 | Mapped to de-identification pipeline standard |
 | **ZIP** | 1 | Mapped to de-identification pipeline standard |
-
+| **INSURANCE** | 1 | Mapped to de-identification pipeline standard |
+| **LICENSE** | 1 | Mapped to de-identification pipeline standard |
 
 ## 3. Per-Note Summary Statistics
 
 | Note ID | Word Count | PHI Ground Truth | Detected | True Positives (TP) | False Positives (FP) | False Negatives (FN) | Recall |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | NOTE_001 | 52 | 15 | 15 | 15 | 0 | 0 | 100.00% |
-| NOTE_002 | 47 | 16 | 15 | 16 | 0 | 0 | 100.00% |
+| NOTE_002 | 47 | 15 | 15 | 15 | 0 | 0 | 100.00% |
 | NOTE_003 | 45 | 12 | 10 | 10 | 0 | 2 | 83.33% |
 | NOTE_004 | 45 | 12 | 11 | 11 | 0 | 1 | 91.67% |
 | NOTE_005 | 52 | 15 | 13 | 13 | 0 | 2 | 86.67% |
-| NOTE_006 | 52 | 15 | 13 | 14 | 0 | 1 | 93.33% |
+| NOTE_006 | 52 | 14 | 13 | 13 | 0 | 1 | 92.86% |
 | NOTE_007 | 47 | 13 | 11 | 11 | 0 | 2 | 84.62% |
 | NOTE_008 | 47 | 14 | 12 | 12 | 0 | 2 | 85.71% |
-| NOTE_009 | 46 | 12 | 11 | 12 | 0 | 0 | 100.00% |
+| NOTE_009 | 46 | 11 | 11 | 11 | 0 | 0 | 100.00% |
 | NOTE_010 | 44 | 15 | 14 | 14 | 0 | 1 | 93.33% |
 | NOTE_011 | 50 | 14 | 12 | 12 | 0 | 2 | 85.71% |
 | NOTE_012 | 52 | 15 | 14 | 14 | 0 | 1 | 93.33% |
-| NOTE_013 | 44 | 14 | 13 | 12 | 0 | 2 | 85.71% |
+| NOTE_013 | 44 | 15 | 13 | 13 | 0 | 2 | 86.67% |
 | NOTE_014 | 53 | 14 | 13 | 13 | 0 | 1 | 92.86% |
-| NOTE_015 | 48 | 15 | 14 | 15 | 0 | 0 | 100.00% |
-
+| NOTE_015 | 48 | 14 | 14 | 14 | 0 | 0 | 100.00% |
+| NOTE_016 | 56 | 12 | 11 | 11 | 1 | 1 | 91.67% |
+| NOTE_017 | 50 | 7 | 8 | 6 | 2 | 1 | 85.71% |
+| NOTE_018 | 48 | 9 | 9 | 8 | 1 | 1 | 88.89% |
+| NOTE_019 | 40 | 6 | 8 | 6 | 1 | 0 | 100.00% |
+| NOTE_020 | 42 | 4 | 5 | 4 | 1 | 0 | 100.00% |
 
 ## 4. Itemized Detections (All Notes)
 
@@ -252,3 +257,46 @@ This report documents the detailed numbers, categories, and positions of all Pro
 | NOTE_015 | **PERSON** | `Rhea Kapoor` | 301-312 |
 | NOTE_015 | **PERSON** | `Farah Ali` | 322-331 |
 | NOTE_015 | **PERSON** | `Daniel Ross` | 348-359 |
+| NOTE_016 | **PERSON** | `John Smith` | 9-19 |
+| NOTE_016 | **DATE** | `14/02/1985` | 35-45 |
+| NOTE_016 | **DATE** | `05/06/2026` | 56-66 |
+| NOTE_016 | **PHONE** | `(555) 019-2834` | 77-91 |
+| NOTE_016 | **SSN** | `666-29-9012` | 97-108 |
+| NOTE_016 | **LOCATION** | `MG Road` | 121-128 |
+| NOTE_016 | **LOCATION** | `Mumbai` | 130-136 |
+| NOTE_016 | **ORGANIZATION** | `Maharashtra 400001` | 138-156 |
+| NOTE_016 | **PERSON** | `Emily Carter` | 182-194 |
+| NOTE_016 | **DATE_TIME** | `4 days` | 283-289 |
+| NOTE_016 | **PERSON** | `Emily Carter` | 377-389 |
+| NOTE_017 | **PERSON** | `Rahul Verma
+Age` | 14-29 |
+| NOTE_017 | **MRN** | `MRN-998822` | 57-67 |
+| NOTE_017 | **DATE** | `01/06/2026` | 78-88 |
+| NOTE_017 | **EMAIL** | `rahul.verma@outlook.com` | 96-119 |
+| NOTE_017 | **PHONE_NUMBER** | `91-98765-43210` | 128-142 |
+| NOTE_017 | **ORGANIZATION** | `ECG` | 238-241 |
+| NOTE_017 | **PERSON** | `Anil Mehta` | 307-317 |
+| NOTE_017 | **ORGANIZATION** | `the Cardiology Wing of` | 321-343 |
+| NOTE_018 | **PERSON** | `Sarah Johnson` | 6-19 |
+| NOTE_018 | **INSURANCE** | `INS-789012-A` | 42-54 |
+| NOTE_018 | **ORGANIZATION** | `Home Address` | 106-118 |
+| NOTE_018 | **LOCATION** | `Delhi` | 136-141 |
+| NOTE_018 | **US_DRIVER_LICENSE** | `110001` | 142-148 |
+| NOTE_018 | **PERSON** | `Mike Johnson` | 168-180 |
+| NOTE_018 | **US_DRIVER_LICENSE** | `9123456780` | 199-209 |
+| NOTE_018 | **PERSON** | `Priya Nair` | 235-245 |
+| NOTE_018 | **LICENSE** | `MH-2024-7890` | 259-271 |
+| NOTE_019 | **DATE** | `June 12, 2026` | 6-19 |
+| NOTE_019 | **PERSON** | `Robert 'Bob'` | 29-41 |
+| NOTE_019 | **PERSON** | `Taylor` | 42-48 |
+| NOTE_019 | **PHONE_NUMBER** | `09-18-1972` | 55-65 |
+| NOTE_019 | **ORGANIZATION** | `IP Address of Device` | 67-87 |
+| NOTE_019 | **IP** | `192.168.1.104` | 89-102 |
+| NOTE_019 | **EMAIL** | `rtaylor72@yahoo.com` | 110-129 |
+| NOTE_019 | **PERSON** | `Sarah Jenkins` | 280-293 |
+| NOTE_020 | **PERSON** | `Alice Green
+Age` | 9-24 |
+| NOTE_020 | **DATE** | `03/15/2026` | 44-54 |
+| NOTE_020 | **URL** | `https://clinical-portal.local/records/g-89211` | 60-105 |
+| NOTE_020 | **DATE_TIME** | `4 weeks` | 273-280 |
+| NOTE_020 | **PERSON** | `James Andrews` | 290-303 |
