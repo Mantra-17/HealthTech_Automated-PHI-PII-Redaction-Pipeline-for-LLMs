@@ -2,24 +2,24 @@
 
 This report evaluates and compares the accuracy of three Protected Health Information (PHI) de-identification configurations: the baseline **Regex Scanner**, the **Presidio NLP Scanner**, and the integrated **Combined Production Proxy**. 
 
-The performance is measured against a gold-standard ground truth dataset manually compiled for all **15 clinical notes** in `regex_pipeline/sample_notes.txt`.
+The performance is measured against a gold-standard ground truth dataset manually compiled for all **20 clinical notes** (15 in `regex_pipeline/sample_notes.txt` and 5 in `nlp/sample_notes.txt`).
 
 ---
 
 ## 1. High-Level Performance Comparison
 
-The metrics below summarize the results after implementing our precision improvement enhancements (contextual header, eponym, and clinical acronym filtering):
+The metrics below summarize the results after implementing our precision improvement enhancements (contextual header, eponym, and clinical acronym filtering) on the full set of 20 clinical notes:
 
 | Configuration | True Positives (TP) | False Positives (FP) | False Negatives (FN) | Precision | Recall | F1-Score |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Regex-Baseline** | 135 | 0 | 76 | **100.00%** | 63.98% | 78.03% |
-| **Presidio-NLP** | 182 | **0** | 29 | **100.00%** | 86.26% | **92.62%** |
-| **Combined-Proxy (Production)** | **194** | **0** | **17** | **100.00%** | **91.94%** | **95.80%** |
+| **Regex-Baseline** | 155 | 0 | 91 | **100.00%** | 63.01% | 77.31% |
+| **Presidio-NLP** | 212 | 6 | 34 | **97.25%** | 86.18% | 91.38% |
+| **Combined-Proxy (Production)** | **226** | **6** | **20** | **97.41%** | **91.87%** | **94.56%** |
 
 ### Key Achievements:
-* **Perfect Precision Achieved:** By implementing contextual header, eponym, and acronym filtering, we have **eliminated all 36 False Positives** (over-redactions) from the Presidio NLP module. The Precision for both the NLP component and the Combined Pipeline is now **100.00%**.
-* **Excellent F1-Score Boost:** The Combined Production Proxy F1-score has risen from **88.24% to 95.80%**, representing state-of-the-art de-identification performance.
-* **The Combined Pipeline remains highly secure:** It maintains an excellent **Recall of 91.94%**, missing only 17 entities out of 211, while guaranteeing zero over-redacted words (preventing the corruption of clinical metadata labels like `DOB` or `MRN` and department labels like `ER` and `ENT`).
+* **Very High Precision Maintained:** By implementing clinical header, eponym, and acronym filtering, we have kept over-redactions extremely low. The Precision of the Combined Pipeline is **97.41%**, preventing context corruption on standard clinical terms.
+* **Significant F1-Score Performance:** The Combined Production Proxy achieves an excellent F1-score of **94.56%**, representing state-of-the-art de-identification performance.
+* **Recall Remains Extremely High:** The Combined Pipeline maintains a **91.87%** recall rate, catching 226 out of 246 ground truth PHI entities.
 
 ---
 
@@ -75,31 +75,31 @@ graph TD
 
 ## 4. Error Analysis & Root Cause
 
-### A. False Negatives (Missed PHI) — 17 occurrences
-With the false positives fully resolved, the remaining area of improvement is addressing the **17 missed PHI occurrences** (False Negatives), which fall into two specific categories:
+### A. False Negatives (Missed PHI) — 20 occurrences
+The remaining area of improvement is addressing the **20 missed PHI occurrences** (False Negatives), which fall into two specific categories:
 
-1. **Street Addresses (8 occurrences):** 
-   * *Examples:* `9 Lake View Road` (Note 3), `75 Brook Lane` (Note 4), `12 Residency Road` (Note 5), `230 King St` (Note 6), `4 Riverfront Apartments` (Note 7), `890 Maple Drive` (Note 8), `17 Civil Lines` (Note 11), `55 Sector 17` (Note 13).
-   * *Root Cause:* The baseline regex module lacks a pattern for addresses. Additionally, the lightweight NLP model (`en_core_web_sm`) fails to recognize these addresses as entities due to their unstructured nature and local Indian formatting.
-2. **State Names / Abbreviations (9 occurrences):**
-   * *Examples:* `Bengaluru` (Note 3), `Jaipur` (Note 5), `Ahmedabad` (Note 7), `DC` (Note 8), `NY` (Note 10), `Lucknow` (Note 11), `OR` (Note 12), `Chandigarh` (Note 13), `GA` (Note 14).
-   * *Root Cause:* Two-letter state codes (NY, GA, OR, DC) are too brief for the small spaCy model to classify as location entities without strong sentence structure context. Indian cities (Bengaluru, Lucknow, Ahmedabad, Jaipur) are also missed because they lie outside the small English model's vocabulary distributions.
+1. **Street Addresses / Geographic Names (18 occurrences):** 
+   * *Examples:* `9 Lake View Road` (NOTE_003), `Bengaluru` (NOTE_003), `75 Brook Lane` (NOTE_004), `12 Residency Road` (NOTE_005), `Jaipur` (NOTE_005), `230 King St` (NOTE_006), `4 Riverfront Apartments` (NOTE_007), `Ahmedabad` (NOTE_007), `890 Maple Drive` (NOTE_008), `DC` (NOTE_008), `NY` (NOTE_010), `17 Civil Lines` (NOTE_011), `Lucknow` (NOTE_011), `OR` (NOTE_012), `55 Sector 17` (NOTE_013), `Chandigarh` (NOTE_013), `GA` (NOTE_014), `15 Park Street` (NOTE_018).
+   * *Root Cause:* The baseline regex module lacks a pattern for addresses in `regex_pipeline/regex_redact.py`. Additionally, the lightweight NLP model (`en_core_web_sm`) fails to recognize these addresses and brief state codes (like DC, NY, OR, GA) as entities due to their unstructured nature and lack of sentence structure context.
+2. **Organization Names (2 occurrences):**
+   * *Examples:* `Sunrise Hospital` (NOTE_016), `Metro Care Center` (NOTE_017).
+   * *Root Cause:* The small English NLP model struggles to capture specific healthcare organizations without clear grammatical context (e.g. `Sunrise Hospital` following a preposition in Note 16, or `Metro Care Center` in Note 17).
 
-### B. False Positives (Over-Redaction) — 0 occurrences (RESOLVED)
-All 36 original false positives have been successfully resolved by integrating the following filter rules:
-1. **Clinical Metadata Headers:** Common structural headers (`DOB`, `SSN`, `MRN`, `Aadhaar`, `Phone`, `Email`, `IP`, `Name`, `Contact`, etc.) are explicitly ignored from `PERSON`, `ORGANIZATION`, and `LOCATION` extractions.
-2. **Medical Acronyms:** Generic clinical abbreviations such as `ER` and `ENT` and location labels like `US` (ultrasound) are excluded from redaction findings.
-3. **Clinical Eponyms:** Disease names containing physician surnames (e.g. `Parkinson's disease`, `Alzheimer's disease`) are ignored to prevent clinical context corruption.
+### B. False Positives (Over-Redaction) — 6 occurrences
+The Precision improvement filters successfully resolved all false positives for the first 15 notes. However, on the 5 NLP notes, **6 False Positives** were encountered:
+* *Examples:* `4 days` (NOTE_016), `ECG` (NOTE_017), `the Cardiology Wing of` (NOTE_017), `Home Address` (NOTE_018), `IP Address of Device` (NOTE_019), `4 weeks` (NOTE_020).
+* *Root Cause:* 
+  * **Clinical Duration & Time:** `4 days` and `4 weeks` were flagged as `DATE_TIME` because Presidio captures general temporal durations.
+  * **General Medical Acronyms:** `ECG` (electrocardiogram) was flagged as an `ORGANIZATION`.
+  * **Metadata Headers / Labels:** Label prefixes like `Home Address` and `IP Address of Device` were flagged as `ORGANIZATION`.
+  * **Boundary Bleed:** `Age` was over-redacted as part of a newline-adjacent patient name match (`Rahul Verma\nAge` and `Alice Green\nAge`).
 
 ---
 
 ## 5. Future Recommendations
 
-To achieve **>98% Recall** while maintaining **100% Precision**, we recommend the following future iterations:
+To achieve **>98% Recall** while maintaining **>99% Precision**, we recommend:
 
-### 1. Implement an Address Regex Recognizer
-Add a robust regular expression recognizer to catch street address patterns. 
-* **Implementation Plan:** Register an address regex pattern in [regex_redact.py](file:///c:/Users/Tirth%20Patel/OneDrive/Onedrive-Desktop/Infotact/HealthTech_Automated-PHI-PII-Redaction-Pipeline-for-LLMs/regex_pipeline/regex_redact.py) (similar to the one defined in [redaction_engine.py](file:///c:/Users/Tirth%20Patel/OneDrive/Onedrive-Desktop/Infotact/HealthTech_Automated-PHI-PII-Redaction-Pipeline-for-LLMs/backend/redaction_engine.py#L26-L30) but optimized for both US and Indian street structures).
-
-### 2. Upgrade spaCy Model or Use Clinical NER
-* **Implementation Plan:** Upgrade the underlying spaCy model from `en_core_web_sm` to `en_core_web_md` or `en_core_web_trf` (Transformer-based) to improve entity boundaries for locations and abbreviations. Alternatively, integrate a clinical-specific NER model (e.g., `scispacy` or a specialized Presidio medical model) to prevent clinical terms like "ER" and "ENT" from being flagged.
+1. **Unify the Address Regex Recognizer:** Port the address pattern from `backend/redaction_engine.py` into the active scanner `regex_pipeline/regex_redact.py`.
+2. **Exclude Clinical Durations:** Refine the date/time filters in `PresidioScanner` to ignore general durations (e.g. phrases matching `\d+\s+(days|weeks|months|years)`).
+3. **Upgrade spaCy Model:** Upgrade the underlying spaCy model to `en_core_web_md` or a clinical NER parser to improve entity boundaries for locations and abbreviations.
