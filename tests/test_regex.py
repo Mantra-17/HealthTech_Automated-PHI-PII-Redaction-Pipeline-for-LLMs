@@ -17,6 +17,8 @@ from regex_pipeline.regex_redact import (
     detect_mrns,
     detect_ssns,
     detect_us_phones,
+    detect_insurance,
+    detect_license,
     scan_and_redact,
 )
 
@@ -56,6 +58,8 @@ def test_scan_result_structure():
         ("Site www.hospital.com", "[URL_REDACTED]"),
         ("Mumbai 400001", "[PIN_REDACTED]"),
         ("ZIP 90210-1234", "[ZIP_REDACTED]"),
+        ("Insurance ID: INS-789012-A", "[INSURANCE_REDACTED]"),
+        ("License No: MH-2024-7890", "[LICENSE_REDACTED]"),
     ],
 )
 def test_individual_redaction_labels(text: str, label: str):
@@ -63,7 +67,7 @@ def test_individual_redaction_labels(text: str, label: str):
     assert label in result["redacted_text"]
     assert result["total_phi_found"] >= 1
 
-
+# us_phoneformat
 def test_us_phone_formats():
     text = "Home (312) 555-7812, work 312-555-9910"
     result = scan_and_redact(text)
@@ -124,6 +128,8 @@ def test_redaction_labels_cover_all_types():
         "url",
         "pin",
         "zip",
+        "insurance",
+        "license",
     }
     assert set(REDACTION_LABELS.keys()) == expected
 
@@ -176,3 +182,5 @@ def test_detect_helpers_return_typed_findings():
     assert detect_mrns("MRN-99")[0]["type"] == "mrn"
     assert detect_indian_phones("9876543210")[0]["type"] == "phone"
     assert detect_us_phones("(555) 123-4567")[0]["type"] == "phone"
+    assert detect_insurance("INS-789012-A")[0]["type"] == "insurance"
+    assert detect_license("MH-2024-7890")[0]["type"] == "license"

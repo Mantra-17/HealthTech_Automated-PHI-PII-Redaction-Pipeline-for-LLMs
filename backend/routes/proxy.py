@@ -31,9 +31,9 @@ proxy_bp = Blueprint("proxy", __name__)
 try:
     redis_client = RedisClient().get_client()
     redis_client.ping()
-    print("✅ Vault Proxy: connected to real Redis")
+    print("[SUCCESS] Vault Proxy: connected to real Redis")
 except Exception as e:
-    print(f"⚠️  Vault Proxy: Redis unavailable ({e}), falling back to fakeredis")
+    print(f"[WARNING] Vault Proxy: Redis unavailable ({e}), falling back to fakeredis")
     redis_client = fakeredis.FakeStrictRedis(decode_responses=True)
 
 # Initialize Vault facade and Presidio NLP scanner
@@ -41,10 +41,68 @@ real_vault = RealVault(redis_client, ttl_seconds=1800)
 
 try:
     nlp_scanner = PresidioScanner()
-    print("✅ Vault Proxy: Presidio NLP scanner initialized successfully")
+    print("[SUCCESS] Vault Proxy: Presidio NLP scanner initialized successfully")
 except Exception as e:
-    print(f"⚠️  Vault Proxy: Failed to initialize Presidio NLP scanner ({e})")
+    print(f"[WARNING] Vault Proxy: Failed to initialize Presidio NLP scanner ({e})")
     nlp_scanner = None
+
+
+def resolve_all_overlaps(findings):
+    """
+    Remove overlapping matches across Regex and NLP scanners,
+    keeping the longest span or the highest priority match type.
+    """
+    if not findings:
+        return []
+
+    priority = {
+        "url": 100,
+        "url_address": 100,
+        "email": 90,
+        "email_address": 90,
+        "ip": 85,
+        "ip_address": 85,
+        "aadhaar": 80,
+        "ssn": 75,
+        "us_ssn": 75,
+        "insurance": 74,
+        "insurance_id": 74,
+        "license": 72,
+        "us_driver_license": 72,
+        "medical_license": 72,
+        "license_number": 72,
+        "mrn": 70,
+        "phone": 65,
+        "phone_number": 65,
+        "date": 60,
+        "date_time": 60,
+        "person": 55,
+        "zip": 50,
+        "location": 45,
+        "pin": 40,
+        "organization": 35,
+    }
+
+    # Sort by start position, then by span length (longest first), then priority.
+    ranked = sorted(
+        findings,
+        key=lambda f: (
+            f["start"],
+            -(f["end"] - f["start"]),
+            -priority.get(f["type"].lower(), 0),
+        ),
+    )
+
+    accepted = []
+    for candidate in ranked:
+        overlaps = any(
+            not (candidate["end"] <= kept["start"] or candidate["start"] >= kept["end"])
+            for kept in accepted
+        )
+        if not overlaps:
+            accepted.append(candidate)
+
+    return sorted(accepted, key=lambda f: f["start"])
 
 
 # ─────────────────────────────────────────────
@@ -59,32 +117,38 @@ def redact_note():
         return jsonify({"error": "No text provided"}), 400
 
     session_id = str(uuid.uuid4())
-    entities_to_process = []
+    all_findings = []
 
     # 1. Run Regex Scanner
     try:
         regex_result = regex_scan(text)
-        for f in regex_result.get("findings", []):
+        all_findings.extend(regex_result.get("findings", []))
+    except Exception as e:
+        logger.error(f"Regex scan error: {e}")
+
+    # 2. Run NLP Presidio Scanner
+    nlp_duration_ms = None
+    if nlp_scanner:
+        try:
+            nlp_result = nlp_scanner.scan_and_redact(text)
+            nlp_duration_ms = nlp_result.get("nlp_duration_ms")
+            all_findings.extend(nlp_result.get("findings", []))
+        except Exception as e:
+            logger.error(f"NLP scan error: {e}")
+
+    # Resolve overlaps between Regex and NLP outputs
+    resolved_findings = resolve_all_overlaps(all_findings)
+    entities_to_process = []
+    seen = set()
+    for f in resolved_findings:
+        key = (f["original_value"].strip().lower(), f["type"].upper())
+        if key not in seen:
+            seen.add(key)
             entities_to_process.append({
                 "text": f["original_value"],
                 "type": f["type"].upper(),
                 "confidence": 1.0
             })
-    except Exception as e:
-        logger.error(f"Regex scan error: {e}")
-
-    # 2. Run NLP Presidio Scanner
-    if nlp_scanner:
-        try:
-            nlp_result = nlp_scanner.scan_and_redact(text)
-            for f in nlp_result.get("findings", []):
-                entities_to_process.append({
-                    "text": f["original_value"],
-                    "type": f["type"].upper(),
-                    "confidence": 1.0
-                })
-        except Exception as e:
-            logger.error(f"NLP scan error: {e}")
 
     # 3. Call real Vault facade to generate tokens and redact the note
     try:
@@ -104,14 +168,15 @@ def redact_note():
         token_map[e["token"]] = e["text"]
 
     return jsonify({
-        "session_id":     session_id,
-        "clean_text":     clean_text,
-        "token_map":      token_map,
-        "entities_found": len(token_map),
-        "entities":       [
+        "session_id":      session_id,
+        "clean_text":      clean_text,
+        "token_map":       token_map,
+        "entities_found":  len(token_map),
+        "entities":        [
             {"original": e["text"], "category": e["type"]}
             for e in processed_entities
-        ]
+        ],
+        "nlp_duration_ms": nlp_duration_ms
     }), 200
 
 

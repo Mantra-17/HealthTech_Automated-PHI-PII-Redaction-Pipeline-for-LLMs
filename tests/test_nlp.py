@@ -46,3 +46,27 @@ def test_date_redaction(scanner):
     # Verify date is redacted
     assert "[DATE_REDACTED]" in result["redacted_text"]
     assert "10/24/2026" not in result["redacted_text"]
+
+def test_insurance_redaction(scanner):
+    text = "Patient has Insurance ID: INS-789012-A."
+    result = scanner.scan_and_redact(text)
+    
+    # Verify insurance ID is redacted
+    assert "[INSURANCE_REDACTED]" in result["redacted_text"]
+    assert "INS-789012-A" not in result["redacted_text"]
+    
+    # Check that insurance type was found in the summary
+    assert "insurance_id" in result["redaction_summary"]
+    assert result["redaction_summary"]["insurance_id"] >= 1
+
+def test_license_redaction(scanner):
+    text = "Attending Physician License No: MH-2024-7890."
+    result = scanner.scan_and_redact(text)
+    
+    # Verify license is redacted
+    assert "[LICENSE_REDACTED]" in result["redacted_text"]
+    assert "MH-2024-7890" not in result["redacted_text"]
+    
+    # Check that license type was found in the summary
+    assert "license_number" in result["redaction_summary"]
+    assert result["redaction_summary"]["license_number"] >= 1

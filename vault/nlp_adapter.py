@@ -1,5 +1,5 @@
 import logging
-from typing import List, Dict, Any
+from typing import Any, Dict, List, Optional
 from .token_store import TokenStore
 
 logger = logging.getLogger(__name__)
@@ -14,7 +14,7 @@ class NLPAdapter:
         self.token_store = token_store
         self.default_threshold = default_confidence_threshold
 
-    def process_entities(self, session_id: str, nlp_results: List[Dict[str, Any]], threshold: float = None) -> List[Dict[str, Any]]:
+    def process_entities(self, session_id: str, nlp_results: List[Dict[str, Any]], threshold: Optional[float] = None) -> List[Dict[str, Any]]:
         """
         Takes raw NLP results and returns tokenized entities.
         
@@ -54,8 +54,10 @@ class NLPAdapter:
                     "type": entity_type
                 })
             except Exception as e:
-                logger.error(f"Failed to process entity '{text}': {e}")
-                # Depending on strictness, we might want to raise, but for now we continue
+                logger.error("Failed to process entity '%s': %s", text, e)
+                # Skip this entity rather than aborting the entire batch.
+                # A single tokenisation failure should not block the rest of
+                # the redaction pass; the entity will simply remain unredacted.
                 continue
                 
         return processed_entities

@@ -28,6 +28,8 @@ REGEX_RULES = [
         r"(?:Street|St|Road|Rd|Avenue|Ave|Lane|Ln|Colony|Nagar)\b",
         re.IGNORECASE
     )),
+    ("INSURANCE", re.compile(r"\bINS-\d+-[A-Za-z0-9]+\b", re.IGNORECASE)),
+    ("LICENSE",   re.compile(r"\b[A-Za-z]{2,3}-\d{4}-\d{3,8}\b", re.IGNORECASE)),
 ]
 
 NAME_PATTERN       = re.compile(r"\b(?:Mr|Mrs|Ms|Dr|Patient)\.?\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)\b")
@@ -94,21 +96,36 @@ def redact(text):
     entities = _find_entities(text)
     token_map = {}
     counters  = {}
+    value_to_pseudonym = {}
 
     clean_text = text
     for e in reversed(entities):
-        counters[e["category"]] = counters.get(e["category"], 0) + 1
-        if e["category"] == "NAME":
-            idx = counters["NAME"] - 1
-            label = chr(65 + idx) if idx < 26 else str(idx)
-            pseudonym = f"Patient {label}"
+        key = (e["original"].strip().lower(), e["category"])
+        if key in value_to_pseudonym:
+            pseudonym = value_to_pseudonym[key]
         else:
-            pseudonym = f"{e['category']}_{counters[e['category']]}"
+            counters[e["category"]] = counters.get(e["category"], 0) + 1
+            if e["category"] == "NAME":
+                idx = counters["NAME"] - 1
+                label = chr(65 + idx) if idx < 26 else str(idx)
+                pseudonym = f"Patient {label}"
+            else:
+                pseudonym = f"{e['category']}_{counters[e['category']]}"
+            value_to_pseudonym[key] = pseudonym
 
         token_map[pseudonym] = e["original"]
         clean_text = clean_text[: e["start"]] + pseudonym + clean_text[e["end"]:]
 
-    return clean_text, token_map, entities
+    # Deduplicate entities returned to client
+    seen = set()
+    unique_entities = []
+    for e in entities:
+        key = (e["original"].strip().lower(), e["category"])
+        if key not in seen:
+            seen.add(key)
+            unique_entities.append(e)
+
+    return clean_text, token_map, unique_entities
 
 
 # ─────────────────────────────────────────────
