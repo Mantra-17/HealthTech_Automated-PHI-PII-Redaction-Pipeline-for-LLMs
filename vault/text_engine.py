@@ -1,3 +1,14 @@
+"""
+vault/text_engine.py
+--------------------
+Stateless text substitution helpers for the forward (redact) and reverse
+(restore) passes of the pseudonymisation pipeline.
+
+Both operations are exposed as static methods on :class:`TextEngine` so they
+can be called without constructing an instance — keeping the Vault facade code
+flat and easy to trace.
+"""
+
 import re
 import logging
 from typing import List, Dict
@@ -46,11 +57,19 @@ class TextEngine:
                 pattern = escaped_text
                 
             match_index = 0
+
+            # ``replace_match`` is a closure over ``tokens`` and ``match_index``.
+            # ``re.sub`` calls it once per regex match, left-to-right.  Using
+            # ``nonlocal match_index`` lets us advance through the token list so
+            # each successive occurrence of the same entity text gets the next
+            # token in sequence (relevant when the same name appears multiple
+            # times and was assigned different tokens by the scanner).
             def replace_match(match):
                 nonlocal match_index
                 if match_index < len(tokens):
                     tok = tokens[match_index]
                 else:
+                    # More occurrences than tokens — reuse the last token.
                     tok = tokens[-1]
                 match_index += 1
                 return tok
@@ -58,8 +77,11 @@ class TextEngine:
             try:
                 redacted_text = re.sub(pattern, replace_match, redacted_text)
             except re.error as e:
-                logger.error(f"Regex error for {entity_text}: {e}")
-                # Fallback string replace (does not support count/index-based cleanly, but safe fallback)
+                logger.error("Regex error for '%s': %s", entity_text, e)
+                # Fallback: plain string replacement when the regex cannot compile
+                # (e.g. special characters in the entity text).  Unlike the regex
+                # path this does not distinguish between occurrences, so every
+                # occurrence receives the first available token.
                 for tok in tokens:
                     redacted_text = redacted_text.replace(entity_text, tok, 1)
                 
