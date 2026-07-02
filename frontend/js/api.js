@@ -58,6 +58,34 @@ class API {
     }
     return response.json();
   }
+
+  static async evaluate(groundTruth, predictions, mode = "exact", strictType = true, aggregation = "micro") {
+    const response = await fetch(`${this.BASE_URL}/evaluate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ground_truth: groundTruth,
+        predictions: predictions,
+        mode: mode,
+        strict_type: strictType,
+        aggregation: aggregation
+      })
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error || "Evaluation request failed");
+    }
+    return response.json();
+  }
+
+  static async getEvaluationSampleNotes() {
+    const response = await fetch(`${this.BASE_URL}/evaluate/sample-notes`);
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to fetch evaluation sample notes");
+    }
+    return response.json();
+  }
 }
 
 window.API = API;
