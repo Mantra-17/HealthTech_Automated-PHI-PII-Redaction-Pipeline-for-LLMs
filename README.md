@@ -1,3 +1,4 @@
+
 # 🏥 HealthTech — Automated PHI/PII Redaction Pipeline for LLMs
 
 A secure, privacy-first proxy dashboard and API pipeline that enables healthcare professionals to safely use external Large Language Models (like Gemini, Claude, or GPT) without violating HIPAA or leaking protected patient data.

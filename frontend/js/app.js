@@ -43,6 +43,11 @@ document.querySelectorAll(".nav-item").forEach((item) => {
     
     if (item.dataset.view === "vault") {
       fetchBackendSessions();
+    } else if (item.dataset.view === "evaluation") {
+      const evalView = document.getElementById("view-evaluation");
+      if (evalView && typeof evalView.initialize === "function") {
+        evalView.initialize();
+      }
     }
   });
 });

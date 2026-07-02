@@ -23,6 +23,9 @@ class AppSidebar extends HTMLElement {
           <a href="#" class="nav-item" data-view="logs">
             <i class="ti ti-list-details"></i> Audit log
           </a>
+          <a href="#" class="nav-item" data-view="evaluation">
+            <i class="ti ti-calculator"></i> Model Evaluation
+          </a>
           <a href="#" class="nav-item" data-view="settings">
             <i class="ti ti-settings"></i> Settings
           </a>

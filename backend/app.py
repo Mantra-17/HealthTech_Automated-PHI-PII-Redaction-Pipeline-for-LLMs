@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 from logger import setup_logging
 from routes.proxy import proxy_bp
+from routes.evaluation import evaluation_bp
 
 # Initialize structured JSON logging
 setup_logging()
@@ -24,6 +25,7 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # Register blueprints
 app.register_blueprint(proxy_bp, url_prefix="/api")
+app.register_blueprint(evaluation_bp, url_prefix="/api")
 
 
 @app.route("/", methods=["GET"])
