@@ -1,6 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          teal:   { 50: '#e1f5ee', 700: '#0f6e56', 800: '#085041' },
+          coral:  { 50: '#faece7', 800: '#712b13' },
+          vault:  { 50: '#faeeda', 800: '#633806' },
+        },
+        fontFamily: {
+          mono: ['SFMono-Regular', 'Consolas', 'Menlo', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+<!-- Keep your styles.css too — Tailwind + CSS variables work together -->
+<link rel="stylesheet" href="css/styles.css" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HealthTech PHI Redaction Proxy</title>
