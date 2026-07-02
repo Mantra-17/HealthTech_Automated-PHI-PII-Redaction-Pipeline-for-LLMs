@@ -4,7 +4,11 @@
 
 class API {
   static get BASE_URL() {
-    return "http://localhost:5001/api";
+    // Dynamically detect if running locally or in the cloud
+    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+      return "http://localhost:5001/api";
+    }
+    return `${window.location.origin}/api`;
   }
 
   static async redact(text) {
