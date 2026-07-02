@@ -29,18 +29,18 @@ class UI {
 
   static renderTokenMap(tokenMap) {
     const tokenMapEl = document.getElementById("token-map");
-    tokenMapEl.className = "token-map";
+    tokenMapEl.className = "flex flex-col gap-2.5";
     tokenMapEl.innerHTML = "";
     for (const [pseudonym, original] of Object.entries(tokenMap)) {
       const category = pseudonym.startsWith("Patient") ? "NAME" : pseudonym.split("_")[0];
       const row      = document.createElement("div");
-      row.className  = "token-row";
+      row.className  = "flex items-center justify-between p-3.5 bg-cream-50/50 border border-cream-200/50 rounded-xl font-mono text-[12px] group hover:bg-cream-50 transition-all duration-200";
       row.innerHTML  = `
-        <span class="pseudo-label">${this.escapeHtml(pseudonym)}</span>
-        <span class="arrow"><i class="ti ti-arrow-right"></i></span>
-        <span class="original-label">${this.escapeHtml(original)}</span>
-        <span class="category-badge">${this.CATEGORY_LABELS[category] || category}</span>
-        <i class="ti ti-lock" title="Stored securely in Redis"></i>
+        <span class="font-semibold text-teal-800">${this.escapeHtml(pseudonym)}</span>
+        <span class="text-tertiary px-1"><i class="ti ti-arrow-right"></i></span>
+        <span class="font-semibold text-purple-800 truncate max-w-[120px] sm:max-w-[200px]" title="${this.escapeHtml(original)}">${this.escapeHtml(original)}</span>
+        <span class="text-[9px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded bg-cream-200 text-muted border border-cream-300/20 ml-auto mr-4">${this.CATEGORY_LABELS[category] || category}</span>
+        <i class="ti ti-lock text-sm text-tertiary" title="Stored securely in Redis"></i>
       `;
       tokenMapEl.appendChild(row);
     }
@@ -50,23 +50,28 @@ class UI {
     const tbody = document.getElementById("vault-table-body");
     tbody.innerHTML = "";
     if (!sessions.length) {
-      tbody.innerHTML = '<tr><td colspan="5" class="empty-row">No sessions yet. Run a redaction to create one.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-8 text-center text-xs text-tertiary bg-white border border-cream-200 rounded-b-xl shadow-sm">No sessions yet. Run a redaction to create one.</td></tr>';
       return;
     }
     for (const s of sessions) {
       const tr      = document.createElement("tr");
+      tr.className  = "hover:bg-cream-50/50 transition-colors duration-150";
       tr.innerHTML  = `
-        <td>${s.id}</td>
-        <td>${s.tokenCount}</td>
-        <td>${s.createdAt.toLocaleTimeString()}</td>
-        <td>${s.expiresInMins} min</td>
-        <td><i class="ti ti-trash" style="cursor:pointer;color:var(--text-tertiary)" data-session="${s.id}" title="Delete session from Redis"></i></td>
+        <td class="px-5 py-3.5 font-mono text-xs text-charcoal-800 border-b border-cream-100">${s.id}</td>
+        <td class="px-5 py-3.5 text-xs text-muted border-b border-cream-100">${s.tokenCount}</td>
+        <td class="px-5 py-3.5 text-xs text-muted border-b border-cream-100">${s.createdAt.toLocaleTimeString()}</td>
+        <td class="px-5 py-3.5 text-xs text-muted border-b border-cream-100">${s.expiresInMins} min</td>
+        <td class="px-5 py-3.5 text-right border-b border-cream-100">
+          <button class="p-1.5 rounded-lg text-tertiary hover:text-coral-500 hover:bg-coral-50 focus:outline-none transition-all duration-200" data-session="${s.id}" title="Delete session from Redis">
+            <i class="ti ti-trash text-base cursor-pointer"></i>
+          </button>
+        </td>
       `;
       tbody.appendChild(tr);
     }
-    tbody.querySelectorAll("[data-session]").forEach((icon) => {
-      icon.addEventListener("click", () => {
-        const id = icon.dataset.session;
+    tbody.querySelectorAll("[data-session]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.session;
         if (onDeleteSession) onDeleteSession(id);
       });
     });
@@ -84,11 +89,11 @@ class UI {
     container.innerHTML = "";
     for (const ev of auditEvents) {
       const div      = document.createElement("div");
-      div.className  = "audit-entry";
+      div.className  = "flex items-start gap-3 bg-white border border-cream-200 rounded-xl p-4 text-sm shadow-sm animate-fade-in";
       div.innerHTML  = `
-        <i class="ti ${ev.icon}"></i>
-        <span>${this.escapeHtml(ev.message)}</span>
-        <span class="audit-time">${ev.time.toLocaleTimeString()}</span>
+        <div class="p-1.5 rounded bg-teal-50 text-teal-700 flex items-center justify-center"><i class="ti ${ev.icon} text-base"></i></div>
+        <span class="text-xs font-medium text-charcoal-800 leading-relaxed mt-0.5">${this.escapeHtml(ev.message)}</span>
+        <span class="ml-auto font-mono text-[10px] text-tertiary whitespace-nowrap mt-1">${ev.time.toLocaleTimeString()}</span>
       `;
       container.appendChild(div);
     }

@@ -5,38 +5,57 @@
 class ViewSettings extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
-      <header class="view-header">
-        <div>
-          <h1>Settings</h1>
-          <p class="subtitle">Configure detection rules and proxy behaviour</p>
-        </div>
+      <header class="mb-6 md:mb-8 pb-4 border-b border-cream-200">
+        <h1>Settings</h1>
+        <p class="text-sm text-muted mt-1">Configure detection rules and proxy behaviour</p>
       </header>
 
-      <div class="card settings-card">
-        <h3>Detection categories</h3>
-        <div class="toggle-row">
-          <label class="toggle"><input type="checkbox" checked disabled /><span>Names</span></label>
-          <label class="toggle"><input type="checkbox" checked disabled /><span>Dates</span></label>
-          <label class="toggle"><input type="checkbox" checked disabled /><span>Phone numbers</span></label>
-          <label class="toggle"><input type="checkbox" checked disabled /><span>Emails</span></label>
-          <label class="toggle"><input type="checkbox" checked disabled /><span>MRN / patient IDs</span></label>
-          <label class="toggle"><input type="checkbox" checked disabled /><span>Addresses</span></label>
-          <label class="toggle"><input type="checkbox" checked disabled /><span>Aadhaar / SSN</span></label>
-          <label class="toggle"><input type="checkbox" checked disabled /><span>Insurance IDs</span></label>
-          <label class="toggle"><input type="checkbox" checked disabled /><span>License numbers</span></label>
+      <!-- Card: Detection Categories -->
+      <div class="max-w-2xl bg-white border border-cream-200 rounded-xl p-5 md:p-6 shadow-sm flex flex-col gap-4 mb-6 animate-fade-in">
+        <h3 class="text-sm font-semibold text-charcoal-800 border-b border-cream-100 pb-3">Detection categories</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <label class="flex items-center gap-2.5 text-xs font-medium text-muted bg-cream-50 border border-cream-200 p-2.5 rounded-lg opacity-85 cursor-not-allowed">
+            <input type="checkbox" checked disabled class="accent-teal-600 w-3.5 h-3.5" />
+            <span>Names</span>
+          </label>
+          <label class="flex items-center gap-2.5 text-xs font-medium text-muted bg-cream-50 border border-cream-200 p-2.5 rounded-lg opacity-85 cursor-not-allowed">
+            <input type="checkbox" checked disabled class="accent-teal-600 w-3.5 h-3.5" />
+            <span>Dates</span>
+          </label>
+          <label class="flex items-center gap-2.5 text-xs font-medium text-muted bg-cream-50 border border-cream-200 p-2.5 rounded-lg opacity-85 cursor-not-allowed">
+            <input type="checkbox" checked disabled class="accent-teal-600 w-3.5 h-3.5" />
+            <span>Phone numbers</span>
+          </label>
+          <label class="flex items-center gap-2.5 text-xs font-medium text-muted bg-cream-50 border border-cream-200 p-2.5 rounded-lg opacity-85 cursor-not-allowed">
+            <input type="checkbox" checked disabled class="accent-teal-600 w-3.5 h-3.5" />
+            <span>Emails</span>
+          </label>
+          <label class="flex items-center gap-2.5 text-xs font-medium text-muted bg-cream-50 border border-cream-200 p-2.5 rounded-lg opacity-85 cursor-not-allowed">
+            <input type="checkbox" checked disabled class="accent-teal-600 w-3.5 h-3.5" />
+            <span>MRN / patient IDs</span>
+          </label>
+          <label class="flex items-center gap-2.5 text-xs font-medium text-muted bg-cream-50 border border-cream-200 p-2.5 rounded-lg opacity-85 cursor-not-allowed">
+            <input type="checkbox" checked disabled class="accent-teal-600 w-3.5 h-3.5" />
+            <span>Addresses</span>
+          </label>
+          <label class="flex items-center gap-2.5 text-xs font-medium text-muted bg-cream-50 border border-cream-200 p-2.5 rounded-lg opacity-85 cursor-not-allowed">
+            <input type="checkbox" checked disabled class="accent-teal-600 w-3.5 h-3.5" />
+            <span>Aadhaar / SSN</span>
+          </label>
         </div>
-        <p class="note">These map directly to the regex + NLP rules implemented in <code>redaction_engine.py</code>. Toggles are illustrative for this demo build.</p>
+        <p class="text-[11px] text-tertiary leading-relaxed mt-2">These map directly to the regex + NLP rules implemented in <code class="font-mono bg-cream-100 text-charcoal-800 px-1.5 py-0.5 rounded text-[10px]">redaction_engine.py</code>. Toggles are illustrative for this demo build.</p>
       </div>
 
-      <div class="card settings-card">
-        <h3>Vault</h3>
-        <div class="form-row">
-          <label>Redis URL</label>
-          <input type="text" value="redis://localhost:6379/0" disabled />
+      <!-- Card: Vault -->
+      <div class="max-w-2xl bg-white border border-cream-200 rounded-xl p-5 md:p-6 shadow-sm flex flex-col gap-4 animate-fade-in">
+        <h3 class="text-sm font-semibold text-charcoal-800 border-b border-cream-100 pb-3">Vault settings</h3>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <label class="text-xs font-medium text-muted">Redis URL</label>
+          <input type="text" value="redis://localhost:6379/0" disabled class="font-mono text-xs text-muted p-2 rounded-lg border border-cream-200 bg-cream-50 w-full sm:w-80 cursor-not-allowed" />
         </div>
-        <div class="form-row">
-          <label>Token TTL (seconds)</label>
-          <input type="text" value="1800" disabled />
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <label class="text-xs font-medium text-muted">Token TTL (seconds)</label>
+          <input type="text" value="1800" disabled class="font-mono text-xs text-muted p-2 rounded-lg border border-cream-200 bg-cream-50 w-full sm:w-80 cursor-not-allowed" />
         </div>
       </div>
     `;

@@ -4,16 +4,49 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HealthTech PHI Redaction Proxy</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            teal:   { 50: '#e1f5ee', 600: '#0f6e56', 700: '#0c5c48', 800: '#085041' },
+            coral:  { 50: '#faece7', 500: '#d85a30', 800: '#712b13' },
+            vault:  { 50: '#faeeda', 800: '#633806' },
+            cream:  { 50: '#faf8f3', 100: '#f4f1ea', 200: '#e2ddd1', 300: '#d5cfbe' },
+            charcoal: { 800: '#2c2c2a', 900: '#1b1b1a' },
+            muted: '#6f6c63',
+            tertiary: '#a8a399',
+            purple: { 50: '#eeedfe', 600: '#534ab7', 800: '#3c3489' },
+            green: { 600: '#639922' }
+          },
+          fontFamily: {
+            mono: ['SFMono-Regular', 'Consolas', 'Menlo', 'monospace'],
+            sans: ['Outfit', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
+          },
+          boxShadow: {
+            premium: '0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 4px 12px -2px rgba(0, 0, 0, 0.025)',
+            'premium-hover': '0 20px 40px -5px rgba(15, 110, 86, 0.08), 0 8px 20px -2px rgba(15, 110, 86, 0.04)',
+          }
+        }
+      }
+    }
+  </script>
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css" />
 </head>
-<body> 
-  <div class="app">
+<body class="bg-cream-100 text-charcoal-800 font-sans min-h-screen antialiased"> 
+  <div class="flex flex-col md:flex-row min-h-screen">
     <!-- Sidebar component -->
-    <app-sidebar></app-sidebar>
+    <app-sidebar class="w-full md:w-64 md:shrink-0"></app-sidebar>
 
     <!-- Main content viewports -->
-    <main class="main">
+    <main class="flex-1 p-4 sm:p-6 md:p-10 max-w-6xl w-full mx-auto">
       <!-- Login View -->
       <view-login id="view-login" class="view active"></view-login>
 
