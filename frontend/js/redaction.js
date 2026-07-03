@@ -9,7 +9,8 @@
  * This lets the frontend demo run standalone without a backend,
  * while staying structurally identical to the Python pipeline
  * so the two can  be swapped later.
- */
+ */     
+
 
 const REGEX_RULES = [
   { category: "DATE", pattern: /\b(?:\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}-\d{2}-\d{2})\b/g },
