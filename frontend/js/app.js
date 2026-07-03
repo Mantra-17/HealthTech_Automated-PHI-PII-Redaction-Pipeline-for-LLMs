@@ -10,7 +10,7 @@ const USE_BACKEND = true;
 let sessions = [];
 const auditEvents = [];
 let currentSession = null;
-let currentUser = null; // Set dynamically upon gateway authorization
+let currentUser = null; //Set dynamically upon gateway authorization
 
 // ── DOM References ───────────────────────────────────────────────
 const inputNote      = document.getElementById("input-note");
