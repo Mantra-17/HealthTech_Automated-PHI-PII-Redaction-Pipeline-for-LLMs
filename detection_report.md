@@ -5,57 +5,56 @@ This report documents the detailed numbers, categories, and positions of all Pro
 ## 1. High-Level Summary Metrics
 
 * **Total Notes Scanned:** 20
-* **Total PHI Ground Truth Items:** 246
-* **Total Entities Detected:** 232
-* **True Positives (TP):** 226
+* **Total PHI Ground Truth Items:** 209
+* **Total Entities Detected:** 207
+* **True Positives (TP):** 201
 * **False Positives (FP):** 6
-* **False Negatives (FN):** 20
-* **Global Precision:** 97.41%
-* **Global Recall:** 91.87%
-* **Global F1-Score:** 94.56%
+* **False Negatives (FN):** 8
+* **Global Precision:** 97.10%
+* **Global Recall:** 96.17%
+* **Global F1-Score:** 96.63%
 
 ## 2. Global Entity Class Frequencies
 
 | Entity Category | Count Detected | Description / Mapped Types |
 | :--- | :---: | :--- |
-| **PERSON** | 53 | Mapped to de-identification pipeline standard |
-| **DATE** | 35 | Mapped to de-identification pipeline standard |
-| **PHONE** | 21 | Mapped to de-identification pipeline standard |
+| **DATE** | 32 | Mapped to de-identification pipeline standard |
+| **PERSON** | 30 | Mapped to de-identification pipeline standard |
 | **EMAIL** | 17 | Mapped to de-identification pipeline standard |
-| **US_DRIVER_LICENSE** | 16 | Mapped to de-identification pipeline standard |
-| **MRN** | 15 | Mapped to de-identification pipeline standard |
-| **LOCATION** | 15 | Mapped to de-identification pipeline standard |
+| **MRN** | 16 | Mapped to de-identification pipeline standard |
+| **LICENSE** | 14 | Mapped to de-identification pipeline standard |
+| **US_DRIVER_LICENSE** | 13 | Mapped to de-identification pipeline standard |
+| **INSURANCE** | 13 | Mapped to de-identification pipeline standard |
+| **PHONE** | 12 | Mapped to de-identification pipeline standard |
+| **LOCATION** | 12 | Mapped to de-identification pipeline standard |
+| **DATE_TIME** | 11 | Mapped to de-identification pipeline standard |
 | **ORGANIZATION** | 11 | Mapped to de-identification pipeline standard |
-| **DATE_TIME** | 9 | Mapped to de-identification pipeline standard |
+| **AADHAAR** | 8 | Mapped to de-identification pipeline standard |
 | **SSN** | 8 | Mapped to de-identification pipeline standard |
-| **URL** | 8 | Mapped to de-identification pipeline standard |
-| **AADHAAR** | 7 | Mapped to de-identification pipeline standard |
-| **IP** | 6 | Mapped to de-identification pipeline standard |
-| **PHONE_NUMBER** | 6 | Mapped to de-identification pipeline standard |
-| **US_SSN** | 2 | Mapped to de-identification pipeline standard |
+| **IP** | 4 | Mapped to de-identification pipeline standard |
+| **URL** | 3 | Mapped to de-identification pipeline standard |
+| **PHONE_NUMBER** | 2 | Mapped to de-identification pipeline standard |
 | **ZIP** | 1 | Mapped to de-identification pipeline standard |
-| **INSURANCE** | 1 | Mapped to de-identification pipeline standard |
-| **LICENSE** | 1 | Mapped to de-identification pipeline standard |
 
 ## 3. Per-Note Summary Statistics
 
 | Note ID | Word Count | PHI Ground Truth | Detected | True Positives (TP) | False Positives (FP) | False Negatives (FN) | Recall |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| NOTE_001 | 52 | 15 | 15 | 15 | 0 | 0 | 100.00% |
-| NOTE_002 | 47 | 15 | 15 | 15 | 0 | 0 | 100.00% |
-| NOTE_003 | 45 | 12 | 10 | 10 | 0 | 2 | 83.33% |
-| NOTE_004 | 45 | 12 | 11 | 11 | 0 | 1 | 91.67% |
-| NOTE_005 | 52 | 15 | 13 | 13 | 0 | 2 | 86.67% |
-| NOTE_006 | 52 | 14 | 13 | 13 | 0 | 1 | 92.86% |
-| NOTE_007 | 47 | 13 | 11 | 11 | 0 | 2 | 84.62% |
-| NOTE_008 | 47 | 14 | 12 | 12 | 0 | 2 | 85.71% |
-| NOTE_009 | 46 | 11 | 11 | 11 | 0 | 0 | 100.00% |
-| NOTE_010 | 44 | 15 | 14 | 14 | 0 | 1 | 93.33% |
-| NOTE_011 | 50 | 14 | 12 | 12 | 0 | 2 | 85.71% |
-| NOTE_012 | 52 | 15 | 14 | 14 | 0 | 1 | 93.33% |
-| NOTE_013 | 44 | 15 | 13 | 13 | 0 | 2 | 86.67% |
-| NOTE_014 | 53 | 14 | 13 | 13 | 0 | 1 | 92.86% |
-| NOTE_015 | 48 | 14 | 14 | 14 | 0 | 0 | 100.00% |
+| NOTE_001 | 29 | 12 | 12 | 12 | 0 | 0 | 100.00% |
+| NOTE_002 | 32 | 12 | 12 | 12 | 0 | 0 | 100.00% |
+| NOTE_003 | 27 | 12 | 11 | 11 | 0 | 1 | 91.67% |
+| NOTE_004 | 28 | 12 | 11 | 11 | 0 | 1 | 91.67% |
+| NOTE_005 | 33 | 14 | 13 | 13 | 0 | 1 | 92.86% |
+| NOTE_006 | 33 | 11 | 11 | 11 | 0 | 0 | 100.00% |
+| NOTE_007 | 40 | 9 | 9 | 9 | 0 | 0 | 100.00% |
+| NOTE_008 | 26 | 9 | 9 | 9 | 0 | 0 | 100.00% |
+| NOTE_009 | 27 | 10 | 10 | 10 | 0 | 0 | 100.00% |
+| NOTE_010 | 41 | 11 | 11 | 11 | 0 | 0 | 100.00% |
+| NOTE_011 | 25 | 10 | 10 | 10 | 0 | 0 | 100.00% |
+| NOTE_012 | 28 | 10 | 10 | 10 | 0 | 0 | 100.00% |
+| NOTE_013 | 39 | 14 | 12 | 12 | 0 | 2 | 85.71% |
+| NOTE_014 | 31 | 12 | 12 | 12 | 0 | 0 | 100.00% |
+| NOTE_015 | 43 | 13 | 13 | 13 | 0 | 0 | 100.00% |
 | NOTE_016 | 56 | 12 | 11 | 11 | 1 | 1 | 91.67% |
 | NOTE_017 | 50 | 7 | 8 | 6 | 2 | 1 | 85.71% |
 | NOTE_018 | 48 | 9 | 9 | 8 | 1 | 1 | 88.89% |
@@ -68,195 +67,170 @@ This report documents the detailed numbers, categories, and positions of all Pro
 | :--- | :--- | :--- | :---: |
 | NOTE_001 | **PERSON** | `Rahul Sharma` | 8-20 |
 | NOTE_001 | **DATE** | `14/02/1985` | 27-37 |
-| NOTE_001 | **DATE** | `05/06/2026` | 50-60 |
-| NOTE_001 | **MRN** | `MRN-00234` | 88-97 |
-| NOTE_001 | **US_DRIVER_LICENSE** | `9876543210` | 108-118 |
-| NOTE_001 | **PHONE** | `+91-98765-43210` | 130-145 |
-| NOTE_001 | **EMAIL** | `rahul.sharma@gmail.com` | 154-176 |
-| NOTE_001 | **AADHAAR** | `1234 5678 9012` | 187-201 |
-| NOTE_001 | **LOCATION** | `MG Road` | 215-222 |
-| NOTE_001 | **LOCATION** | `Mumbai` | 224-230 |
-| NOTE_001 | **US_DRIVER_LICENSE** | `400001` | 231-237 |
-| NOTE_001 | **IP** | `192.168.1.1` | 262-273 |
-| NOTE_001 | **PERSON** | `Emily Carter` | 287-299 |
-| NOTE_001 | **PERSON** | `Arjun Mehta` | 320-331 |
-| NOTE_001 | **DATE** | `June 9 2026` | 349-360 |
-| NOTE_002 | **PERSON** | `Sarah Johnson` | 9-22 |
-| NOTE_002 | **DATE** | `1989-11-23` | 28-38 |
-| NOTE_002 | **PHONE_NUMBER** | `06-14-2026` | 54-64 |
-| NOTE_002 | **PHONE** | `(312) 555-7812` | 96-110 |
-| NOTE_002 | **PHONE** | `312-555-9910` | 123-135 |
-| NOTE_002 | **EMAIL** | `sarah.johnson@northvalley.org` | 143-172 |
-| NOTE_002 | **SSN** | `421-66-9034` | 179-190 |
-| NOTE_002 | **MRN** | `MRN-88321` | 197-206 |
-| NOTE_002 | **ORGANIZATION** | `W Pine Ave` | 219-229 |
-| NOTE_002 | **LOCATION** | `Chicago` | 231-238 |
-| NOTE_002 | **LOCATION** | `IL 60614-2210` | 240-253 |
-| NOTE_002 | **URL** | `https://northvalleyclinic.org/followup.` | 270-309 |
-| NOTE_002 | **PERSON** | `Michael Brown` | 327-340 |
-| NOTE_002 | **PERSON** | `Sarah Johnson` | 350-363 |
-| NOTE_002 | **DATE** | `06/20/2026` | 388-398 |
-| NOTE_003 | **PERSON** | `Vikram Iyer` | 6-17 |
-| NOTE_003 | **PHONE_NUMBER** | `03-07-2026` | 36-46 |
-| NOTE_003 | **DATE** | `2026-07-15` | 60-70 |
-| NOTE_003 | **PHONE** | `+91 91234 56789` | 166-181 |
-| NOTE_003 | **US_DRIVER_LICENSE** | `9123456789` | 202-212 |
-| NOTE_003 | **EMAIL** | `vikram.iyer@medmail.in` | 221-243 |
-| NOTE_003 | **MRN** | `MRN-10098` | 250-259 |
-| NOTE_003 | **AADHAAR** | `987654321234` | 269-281 |
-| NOTE_003 | **US_DRIVER_LICENSE** | `560034` | 320-326 |
-| NOTE_003 | **PERSON** | `Nisha Rao` | 344-353 |
+| NOTE_001 | **MRN** | `MRN-12345` | 39-48 |
+| NOTE_001 | **DATE_TIME** | `INS-111111-A.` | 69-82 |
+| NOTE_001 | **PHONE** | `+91-98765-43210` | 92-107 |
+| NOTE_001 | **EMAIL** | `rahul.sharma@gmail.com` | 115-137 |
+| NOTE_001 | **AADHAAR** | `1234 5678 9012` | 160-174 |
+| NOTE_001 | **PERSON** | `Driver` | 176-182 |
+| NOTE_001 | **LICENSE** | `MH-2024-7890` | 193-205 |
+| NOTE_001 | **LOCATION** | `MG Road` | 219-226 |
+| NOTE_001 | **LOCATION** | `Mumbai` | 228-234 |
+| NOTE_001 | **US_DRIVER_LICENSE** | `400001` | 235-241 |
+| NOTE_002 | **PERSON** | `Sarah Johnson` | 8-21 |
+| NOTE_002 | **DATE** | `June 14 1989` | 27-39 |
+| NOTE_002 | **DATE** | `June 14 2026` | 52-64 |
+| NOTE_002 | **MRN** | `MRN-54321` | 66-75 |
+| NOTE_002 | **PHONE** | `(312) 555-7812` | 84-98 |
+| NOTE_002 | **EMAIL** | `sarah.j@outlook.com` | 107-126 |
+| NOTE_002 | **SSN** | `123-45-6789` | 133-144 |
+| NOTE_002 | **INSURANCE** | `INS-222222-B` | 162-174 |
+| NOTE_002 | **LICENSE** | `CA-2025-98765` | 184-197 |
+| NOTE_002 | **ORGANIZATION** | `Pine St` | 213-220 |
+| NOTE_002 | **LOCATION** | `Chicago` | 222-229 |
+| NOTE_002 | **ZIP** | `60614` | 234-239 |
+| NOTE_003 | **PERSON** | `Vikram Iyer` | 8-19 |
+| NOTE_003 | **DATE** | `1980-05-12` | 26-36 |
+| NOTE_003 | **DATE** | `2026-07-15` | 51-61 |
+| NOTE_003 | **MRN** | `MRN-99999` | 63-72 |
+| NOTE_003 | **US_DRIVER_LICENSE** | `9123456789` | 83-93 |
+| NOTE_003 | **EMAIL** | `vikram.iyer@health.in` | 102-123 |
+| NOTE_003 | **AADHAAR** | `987654321234` | 134-146 |
+| NOTE_003 | **ORGANIZATION** | `INS-333333-C. Medical` | 169-190 |
+| NOTE_003 | **LICENSE** | `KA-2023-54321` | 200-213 |
+| NOTE_003 | **LOCATION** | `Lake Road` | 226-235 |
+| NOTE_003 | **US_DRIVER_LICENSE** | `560034` | 247-253 |
 | NOTE_004 | **PERSON** | `Emily Turner` | 8-20 |
-| NOTE_004 | **DATE** | `March 12 2026` | 34-47 |
-| NOTE_004 | **DATE** | `03/19/2026` | 61-71 |
-| NOTE_004 | **EMAIL** | `emily.turner@westbrookhealth.com` | 195-227 |
-| NOTE_004 | **PHONE** | `646-555-3819` | 236-248 |
-| NOTE_004 | **SSN** | `239-40-7711` | 255-266 |
-| NOTE_004 | **MRN** | `MRN-55007` | 273-282 |
-| NOTE_004 | **LOCATION** | `Newark` | 310-316 |
-| NOTE_004 | **ORGANIZATION** | `NJ` | 318-320 |
-| NOTE_004 | **ZIP** | `07102` | 321-326 |
-| NOTE_004 | **URL** | `www.westbrookhealth.com/patient-portal.` | 341-380 |
+| NOTE_004 | **DATE** | `09/12/1992` | 27-37 |
+| NOTE_004 | **DATE** | `03/19/2026` | 50-60 |
+| NOTE_004 | **MRN** | `MRN-22222` | 62-71 |
+| NOTE_004 | **PHONE** | `646-555-3819` | 80-92 |
+| NOTE_004 | **EMAIL** | `emily.turner@hospital.com` | 101-126 |
+| NOTE_004 | **SSN** | `987-12-3456` | 133-144 |
+| NOTE_004 | **INSURANCE** | `INS-444444-D` | 157-169 |
+| NOTE_004 | **LICENSE** | `NY-2022-11111` | 187-200 |
+| NOTE_004 | **LOCATION** | `New York` | 226-234 |
+| NOTE_004 | **DATE_TIME** | `10011` | 239-244 |
 | NOTE_005 | **PERSON** | `Abdul Khan` | 8-18 |
-| NOTE_005 | **DATE** | `22/08/1978` | 25-35 |
-| NOTE_005 | **DATE** | `2026-06-02` | 56-66 |
-| NOTE_005 | **DATE** | `2026-06-04` | 82-92 |
-| NOTE_005 | **PHONE** | `+91-99887-66554` | 112-127 |
-| NOTE_005 | **US_DRIVER_LICENSE** | `9988766554` | 144-154 |
-| NOTE_005 | **EMAIL** | `abdul.khan@citycare.in` | 163-185 |
-| NOTE_005 | **AADHAAR** | `4567 1234 8890` | 196-210 |
-| NOTE_005 | **MRN** | `MRN-32011` | 217-226 |
-| NOTE_005 | **US_DRIVER_LICENSE** | `302001` | 263-269 |
-| NOTE_005 | **IP** | `10.14.22.9` | 293-303 |
-| NOTE_005 | **PERSON** | `Ritu Sengar` | 328-339 |
-| NOTE_005 | **PERSON** | `Harsh Vardhan` | 357-370 |
+| NOTE_005 | **DATE** | `1978-08-22` | 24-34 |
+| NOTE_005 | **DATE** | `2026-06-02` | 49-59 |
+| NOTE_005 | **MRN** | `MRN-33333` | 61-70 |
+| NOTE_005 | **PHONE** | `+91-99887-66554` | 79-94 |
+| NOTE_005 | **EMAIL** | `abdul.khan@care.in` | 103-121 |
+| NOTE_005 | **AADHAAR** | `456712348890` | 132-144 |
+| NOTE_005 | **INSURANCE** | `INS-555555-E` | 157-169 |
+| NOTE_005 | **LICENSE** | `RJ-2021-2222` | 179-191 |
+| NOTE_005 | **LOCATION** | `Residency Rd` | 205-217 |
+| NOTE_005 | **US_DRIVER_LICENSE** | `302001` | 226-232 |
+| NOTE_005 | **IP** | `10.14.22.9` | 260-270 |
+| NOTE_005 | **URL** | `www.citycare.in/portal.` | 284-307 |
 | NOTE_006 | **PERSON** | `Laura Mitchell` | 8-22 |
-| NOTE_006 | **PHONE_NUMBER** | `04-09-2026` | 31-41 |
-| NOTE_006 | **DATE** | `April 16 2026` | 80-93 |
-| NOTE_006 | **PHONE** | `(415) 555-2840` | 101-115 |
-| NOTE_006 | **PHONE** | `415-555-0028` | 133-145 |
-| NOTE_006 | **EMAIL** | `l.mitchell@bayareahealth.net` | 154-182 |
-| NOTE_006 | **SSN** | `533-18-6245` | 188-199 |
-| NOTE_006 | **MRN** | `MRN-44590` | 206-215 |
-| NOTE_006 | **LOCATION** | `San Francisco` | 239-252 |
-| NOTE_006 | **DATE_TIME** | `CA 94107` | 254-262 |
-| NOTE_006 | **US_SSN** | `94107-3119` | 289-299 |
-| NOTE_006 | **PERSON** | `Alan Reed` | 317-326 |
-| NOTE_006 | **PERSON** | `Susan Park` | 334-344 |
-| NOTE_007 | **PERSON** | `Neha Desai` | 8-18 |
-| NOTE_007 | **DATE** | `11/01/1993` | 24-34 |
-| NOTE_007 | **DATE** | `01/07/2026` | 52-62 |
-| NOTE_007 | **DATE** | `05/07/2026` | 79-89 |
-| NOTE_007 | **PHONE** | `+91 98765 12345` | 190-205 |
-| NOTE_007 | **US_DRIVER_LICENSE** | `9876512345` | 210-220 |
-| NOTE_007 | **EMAIL** | `neha.desai@apolloexample.com` | 228-256 |
-| NOTE_007 | **MRN** | `MRN-77880` | 263-272 |
-| NOTE_007 | **AADHAAR** | `2345 6789 1201` | 282-296 |
-| NOTE_007 | **US_DRIVER_LICENSE** | `380009` | 342-348 |
-| NOTE_007 | **URL** | `www.apolloexample.com/cases.` | 357-385 |
-| NOTE_008 | **PERSON** | `Robert Hayes` | 8-20 |
-| NOTE_008 | **DATE** | `2026-05-10` | 32-42 |
-| NOTE_008 | **PHONE** | `202-555-0144` | 102-114 |
-| NOTE_008 | **PHONE** | `(202) 555-2711` | 126-140 |
-| NOTE_008 | **EMAIL** | `robert.hayes@metrocare.us` | 148-173 |
-| NOTE_008 | **SSN** | `667-24-8931` | 180-191 |
-| NOTE_008 | **MRN** | `MRN-91002` | 198-207 |
-| NOTE_008 | **LOCATION** | `Washington` | 235-245 |
-| NOTE_008 | **DATE_TIME** | `20009` | 250-255 |
-| NOTE_008 | **IP** | `172.16.44.101` | 280-293 |
-| NOTE_008 | **PERSON** | `Priya Nair` | 319-329 |
-| NOTE_008 | **PERSON** | `George Allen` | 355-367 |
-| NOTE_009 | **PERSON** | `Kavya Menon` | 8-19 |
-| NOTE_009 | **DATE** | `June 5 2026` | 51-62 |
-| NOTE_009 | **DATE** | `12-06-2026` | 86-96 |
-| NOTE_009 | **US_DRIVER_LICENSE** | `9765432109` | 105-115 |
-| NOTE_009 | **PHONE** | `+91-97654-32109` | 134-149 |
-| NOTE_009 | **EMAIL** | `kavya.menon@skinwell.in` | 157-180 |
-| NOTE_009 | **AADHAAR** | `1122 3344 5566` | 190-204 |
-| NOTE_009 | **ORGANIZATION** | `MRN MRN-66543` | 206-219 |
-| NOTE_009 | **LOCATION** | `Green Park` | 241-251 |
-| NOTE_009 | **DATE_TIME** | `Kochi 682020` | 253-265 |
-| NOTE_009 | **PERSON** | `Meera Das` | 279-288 |
-| NOTE_010 | **PERSON** | `Jacob Miller` | 8-20 |
-| NOTE_010 | **DATE** | `07/21/1982` | 27-37 |
-| NOTE_010 | **DATE** | `07-28-2026` | 55-65 |
-| NOTE_010 | **DATE** | `2026-08-11` | 70-80 |
-| NOTE_010 | **PHONE** | `718-555-6620` | 92-104 |
-| NOTE_010 | **EMAIL** | `jacob.miller@eastbridge.org` | 109-136 |
-| NOTE_010 | **SSN** | `314-55-9002` | 142-153 |
-| NOTE_010 | **MRN** | `MRN-77210` | 160-169 |
-| NOTE_010 | **LOCATION** | `Street` | 194-200 |
-| NOTE_010 | **LOCATION** | `New York` | 202-210 |
-| NOTE_010 | **US_SSN** | `10065-4120` | 215-225 |
-| NOTE_010 | **URL** | `https://eastbridge.org/results.` | 239-270 |
-| NOTE_010 | **PERSON** | `Helena Cruz` | 287-298 |
-| NOTE_010 | **PERSON** | `Omar Patel` | 319-329 |
-| NOTE_011 | **PERSON** | `Isha Gupta` | 8-18 |
-| NOTE_011 | **DATE** | `09/06/2026` | 49-59 |
-| NOTE_011 | **DATE** | `14/06/2026` | 82-92 |
-| NOTE_011 | **US_DRIVER_LICENSE** | `9012345678` | 100-110 |
-| NOTE_011 | **PHONE** | `+91 90123 45678` | 116-131 |
-| NOTE_011 | **EMAIL** | `isha.gupta@caremail.in` | 139-161 |
-| NOTE_011 | **AADHAAR** | `7788 9900 1122` | 172-186 |
-| NOTE_011 | **MRN** | `MRN-24567` | 193-202 |
-| NOTE_011 | **US_DRIVER_LICENSE** | `226001` | 237-243 |
-| NOTE_011 | **IP** | `192.168.200.45` | 261-275 |
-| NOTE_011 | **PERSON** | `Rohit Sen` | 294-303 |
-| NOTE_011 | **PERSON** | `Isha Gupta` | 318-328 |
-| NOTE_012 | **PERSON** | `Matthew Clark` | 8-21 |
-| NOTE_012 | **DATE** | `February 3 2026` | 48-63 |
-| NOTE_012 | **DATE** | `02/10/2026` | 81-91 |
-| NOTE_012 | **PHONE** | `(503) 555-1299` | 100-114 |
-| NOTE_012 | **PHONE** | `503-555-7781` | 126-138 |
-| NOTE_012 | **EMAIL** | `m.clark@rainierclinic.com` | 146-171 |
-| NOTE_012 | **SSN** | `808-33-4501` | 178-189 |
-| NOTE_012 | **MRN** | `MRN-60991` | 196-205 |
-| NOTE_012 | **PERSON** | `Alder St` | 224-232 |
-| NOTE_012 | **LOCATION** | `Portland` | 234-242 |
-| NOTE_012 | **DATE_TIME** | `97205` | 247-252 |
-| NOTE_012 | **URL** | `www.rainierclinic.com/login.` | 270-298 |
-| NOTE_012 | **PERSON** | `Elena Moore` | 311-322 |
-| NOTE_012 | **PERSON** | `Victor James` | 340-352 |
+| NOTE_006 | **DATE** | `October 10 1975` | 28-43 |
+| NOTE_006 | **DATE** | `April 16 2026` | 58-71 |
+| NOTE_006 | **MRN** | `MRN-44444` | 73-82 |
+| NOTE_006 | **PHONE** | `(415) 555-2840` | 91-105 |
+| NOTE_006 | **EMAIL** | `l.mitchell@bay.net` | 114-132 |
+| NOTE_006 | **SSN** | `533-18-6245` | 139-150 |
+| NOTE_006 | **ORGANIZATION** | `INS-666666-F. License` | 169-190 |
+| NOTE_006 | **LICENSE** | `CA-2026-33333` | 191-204 |
+| NOTE_006 | **DATE_TIME** | `94107` | 216-221 |
+| NOTE_006 | **IP** | `172.16.44.101` | 251-264 |
+| NOTE_007 | **DATE** | `1965-03-12` | 29-39 |
+| NOTE_007 | **DATE** | `2026-05-10` | 54-64 |
+| NOTE_007 | **MRN** | `MRN-55555` | 66-75 |
+| NOTE_007 | **PHONE** | `206-555-0144` | 84-96 |
+| NOTE_007 | **EMAIL** | `john.parkinson@clinic.org` | 105-130 |
+| NOTE_007 | **SSN** | `667-24-8931` | 137-148 |
+| NOTE_007 | **INSURANCE** | `INS-777777-G` | 158-170 |
+| NOTE_007 | **LICENSE** | `WA-2025-44444` | 180-193 |
+| NOTE_007 | **DATE_TIME** | `98101` | 205-210 |
+| NOTE_008 | **PERSON** | `Neha Desai` | 8-18 |
+| NOTE_008 | **DATE** | `11/01/1993` | 25-35 |
+| NOTE_008 | **MRN** | `MRN-77777` | 37-46 |
+| NOTE_008 | **INSURANCE** | `INS-888888-H` | 56-68 |
+| NOTE_008 | **PHONE** | `+91 98765 12345` | 79-94 |
+| NOTE_008 | **EMAIL** | `neha.desai@apollo.com` | 102-123 |
+| NOTE_008 | **AADHAAR** | `2345 6789 1201` | 134-148 |
+| NOTE_008 | **ORGANIZATION** | `License GJ-2024-55555` | 150-171 |
+| NOTE_008 | **US_DRIVER_LICENSE** | `380009` | 211-217 |
+| NOTE_009 | **PERSON** | `Robert Hayes` | 8-20 |
+| NOTE_009 | **DATE** | `May 05 1970` | 26-37 |
+| NOTE_009 | **DATE** | `June 05 2026` | 50-62 |
+| NOTE_009 | **MRN** | `MRN-91111` | 64-73 |
+| NOTE_009 | **PHONE** | `(202) 555-2711` | 82-96 |
+| NOTE_009 | **EMAIL** | `robert.hayes@metro.us` | 105-126 |
+| NOTE_009 | **SSN** | `111-22-3333` | 133-144 |
+| NOTE_009 | **INSURANCE** | `INS-999999-I` | 161-173 |
+| NOTE_009 | **LICENSE** | `DC-2023-66666` | 183-196 |
+| NOTE_009 | **DATE_TIME** | `20009` | 203-208 |
+| NOTE_010 | **PERSON** | `Kavya Menon` | 8-19 |
+| NOTE_010 | **DATE** | `12-06-2026` | 26-36 |
+| NOTE_010 | **DATE** | `05/12/1988` | 55-65 |
+| NOTE_010 | **MRN** | `MRN-66666` | 67-76 |
+| NOTE_010 | **US_DRIVER_LICENSE** | `9765432109` | 85-95 |
+| NOTE_010 | **EMAIL** | `kavya.menon@skin.in` | 103-122 |
+| NOTE_010 | **AADHAAR** | `1122 3344 5566` | 133-147 |
+| NOTE_010 | **INSURANCE** | `INS-123456-J` | 156-168 |
+| NOTE_010 | **LICENSE** | `KL-2022-77777` | 178-191 |
+| NOTE_010 | **LOCATION** | `Green Park` | 205-215 |
+| NOTE_010 | **DATE_TIME** | `Kochi 682020` | 217-229 |
+| NOTE_011 | **PERSON** | `Jacob Miller` | 8-20 |
+| NOTE_011 | **DATE** | `07/21/1982` | 27-37 |
+| NOTE_011 | **MRN** | `MRN-77721` | 39-48 |
+| NOTE_011 | **INSURANCE** | `INS-234567-K` | 58-70 |
+| NOTE_011 | **PHONE** | `718-555-6620` | 81-93 |
+| NOTE_011 | **EMAIL** | `jacob.miller@east.org` | 101-122 |
+| NOTE_011 | **SSN** | `314-55-9002` | 129-140 |
+| NOTE_011 | **LICENSE** | `NY-2021-88888` | 150-163 |
+| NOTE_011 | **LOCATION** | `New York` | 189-197 |
+| NOTE_011 | **DATE_TIME** | `10065` | 202-207 |
+| NOTE_012 | **PERSON** | `Isha Gupta` | 8-18 |
+| NOTE_012 | **DATE** | `09/06/2026` | 25-35 |
+| NOTE_012 | **DATE** | `14/08/1995` | 47-57 |
+| NOTE_012 | **MRN** | `MRN-24567` | 59-68 |
+| NOTE_012 | **INSURANCE** | `INS-345678-L` | 77-89 |
+| NOTE_012 | **PHONE** | `+91 90123 45678` | 100-115 |
+| NOTE_012 | **EMAIL** | `isha.gupta@care.in` | 123-141 |
+| NOTE_012 | **AADHAAR** | `7788 9900 1122` | 152-166 |
+| NOTE_012 | **ORGANIZATION** | `License UP-2025-99999` | 168-189 |
+| NOTE_012 | **US_DRIVER_LICENSE** | `226001` | 224-230 |
 | NOTE_013 | **PERSON** | `Harpreet Singh` | 8-22 |
 | NOTE_013 | **DATE** | `1991-03-18` | 28-38 |
-| NOTE_013 | **DATE** | `18-03-2026` | 57-67 |
-| NOTE_013 | **PHONE** | `+91-88990-11223` | 107-122 |
-| NOTE_013 | **US_DRIVER_LICENSE** | `8899011223` | 134-144 |
-| NOTE_013 | **EMAIL** | `harpreet.singh@spinecare.in` | 152-179 |
-| NOTE_013 | **ORGANIZATION** | `Aadhaar 6655` | 181-193 |
-| NOTE_013 | **DATE_TIME** | `4433 2211` | 194-203 |
-| NOTE_013 | **MRN** | `MRN-34220` | 210-219 |
-| NOTE_013 | **US_DRIVER_LICENSE** | `160017` | 255-261 |
-| NOTE_013 | **URL** | `https://spinecare.in/appointments.` | 271-305 |
-| NOTE_013 | **PERSON** | `Kavita Malhotra` | 327-342 |
-| NOTE_013 | **PERSON** | `S. Banerjee` | 360-371 |
-| NOTE_014 | **PERSON** | `Olivia Reed` | 8-19 |
-| NOTE_014 | **DATE** | `2026-09-01` | 28-38 |
-| NOTE_014 | **DATE** | `September 8 2026` | 79-95 |
-| NOTE_014 | **PHONE** | `404-555-8001` | 124-136 |
-| NOTE_014 | **PHONE** | `(404) 555-3322` | 141-155 |
-| NOTE_014 | **EMAIL** | `o.reed@atlanticmindhealth.com` | 164-193 |
-| NOTE_014 | **SSN** | `921-77-6108` | 199-210 |
-| NOTE_014 | **MRN** | `MRN-51444` | 216-225 |
-| NOTE_014 | **ORGANIZATION** | `Peachtree Blvd` | 239-253 |
-| NOTE_014 | **LOCATION** | `Atlanta` | 255-262 |
-| NOTE_014 | **DATE_TIME** | `30309` | 267-272 |
-| NOTE_014 | **IP** | `203.0.113.19` | 284-296 |
-| NOTE_014 | **PERSON** | `Ian Foster` | 314-324 |
+| NOTE_013 | **DATE** | `18-03-2026` | 51-61 |
+| NOTE_013 | **MRN** | `MRN-34220` | 63-72 |
+| NOTE_013 | **INSURANCE** | `INS-456789-M` | 82-94 |
+| NOTE_013 | **US_DRIVER_LICENSE** | `8899011223` | 103-113 |
+| NOTE_013 | **EMAIL** | `harpreet.singh@spine.in` | 122-145 |
+| NOTE_013 | **AADHAAR** | `6655 4433 2211` | 156-170 |
+| NOTE_013 | **LICENSE** | `CH-2020-00111` | 181-194 |
+| NOTE_013 | **US_DRIVER_LICENSE** | `160017` | 230-236 |
+| NOTE_013 | **PERSON** | `Harpreet Singh` | 245-259 |
+| NOTE_013 | **US_DRIVER_LICENSE** | `8899011223` | 310-320 |
+| NOTE_014 | **PERSON** | `Matthew Clark` | 8-21 |
+| NOTE_014 | **DATE** | `August 22 1983` | 27-41 |
+| NOTE_014 | **DATE** | `February 3 2026` | 54-69 |
+| NOTE_014 | **MRN** | `MRN-60991` | 71-80 |
+| NOTE_014 | **PHONE** | `(503) 555-1299` | 89-103 |
+| NOTE_014 | **EMAIL** | `m.clark@rainier.com` | 112-131 |
+| NOTE_014 | **SSN** | `808-33-4501` | 138-149 |
+| NOTE_014 | **INSURANCE** | `INS-567890-N` | 159-171 |
+| NOTE_014 | **LICENSE** | `OR-2024-22222` | 181-194 |
+| NOTE_014 | **PERSON** | `Alder St` | 208-216 |
+| NOTE_014 | **LOCATION** | `Portland` | 218-226 |
+| NOTE_014 | **DATE_TIME** | `97205` | 231-236 |
 | NOTE_015 | **PERSON** | `Farah Ali` | 8-17 |
-| NOTE_015 | **DATE** | `13/07/2026` | 31-41 |
-| NOTE_015 | **PHONE_NUMBER** | `07-20-2026` | 78-88 |
+| NOTE_015 | **DATE** | `1996-05-18` | 23-33 |
+| NOTE_015 | **DATE** | `13/07/2026` | 70-80 |
+| NOTE_015 | **MRN** | `MRN-80818` | 82-91 |
 | NOTE_015 | **US_DRIVER_LICENSE** | `9345678901` | 100-110 |
-| NOTE_015 | **PHONE** | `+91 93456 78901` | 112-127 |
-| NOTE_015 | **EMAIL** | `farah.ali@metrohospital.in` | 135-161 |
-| NOTE_015 | **AADHAAR** | `9900 7766 5544` | 172-186 |
-| NOTE_015 | **MRN** | `MRN-80818` | 193-202 |
-| NOTE_015 | **ORGANIZATION** | `101 Palm Residency` | 213-231 |
-| NOTE_015 | **DATE_TIME** | `Pune 411001` | 233-244 |
-| NOTE_015 | **URL** | `www.metrohospital.in/help.` | 259-285 |
-| NOTE_015 | **PERSON** | `Rhea Kapoor` | 301-312 |
-| NOTE_015 | **PERSON** | `Farah Ali` | 322-331 |
-| NOTE_015 | **PERSON** | `Daniel Ross` | 348-359 |
+| NOTE_015 | **EMAIL** | `farah.ali@metro.in` | 119-137 |
+| NOTE_015 | **AADHAAR** | `9900 7766 5544` | 148-162 |
+| NOTE_015 | **INSURANCE** | `INS-678901-O` | 172-184 |
+| NOTE_015 | **LICENSE** | `MH-2025-11223` | 195-208 |
+| NOTE_015 | **ORGANIZATION** | `101 Palm Residency` | 219-237 |
+| NOTE_015 | **DATE_TIME** | `Pune 411001` | 239-250 |
+| NOTE_015 | **IP** | `192.168.10.150` | 310-324 |
+| NOTE_015 | **URL** | `www.metrohospital.in/telehealth.` | 349-381 |
 | NOTE_016 | **PERSON** | `John Smith` | 9-19 |
 | NOTE_016 | **DATE** | `14/02/1985` | 35-45 |
 | NOTE_016 | **DATE** | `05/06/2026` | 56-66 |

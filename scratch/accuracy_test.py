@@ -229,6 +229,113 @@ GROUND_TRUTH_16_20 = {
 def overlaps(a, b):
     return a["start"] < b["end"] and b["start"] < a["end"]
 
+def to_canonical(t):
+    t = t.lower().strip()
+    if t in ("person", "names"):
+        return "PERSON"
+    if t in ("date", "date_time", "time"):
+        return "DATE"
+    if t in ("phone", "phone_number"):
+        return "PHONE"
+    if t in ("email", "email_address"):
+        return "EMAIL"
+    if t in ("ssn", "us_ssn"):
+        return "SSN"
+    if t in ("mrn",):
+        return "MRN"
+    if t in ("insurance", "insurance_id"):
+        return "INSURANCE"
+    if t in ("license", "us_driver_license", "license_number", "medical_license"):
+        return "LICENSE"
+    if t in ("location", "zip", "pin"):
+        return "LOCATION"
+    if t in ("organization", "org"):
+        return "ORGANIZATION"
+    if t in ("url", "web_url", "url_address"):
+        return "URL"
+    if t in ("ip", "ip_address"):
+        return "IP"
+    if t in ("aadhaar",):
+        return "AADHAAR"
+    return t.upper()
+
+CANONICAL_CATEGORIES = [
+    "PERSON", "DATE", "LOCATION", "PHONE", "EMAIL",
+    "SSN", "MRN", "INSURANCE", "LICENSE", "URL", "IP",
+    "ORGANIZATION", "AADHAAR"
+]
+
+def evaluate_per_entity(notes, ground_truth, run_fn):
+    metrics = {cat: {"tp": 0, "fp": 0, "fn": 0} for cat in CANONICAL_CATEGORIES}
+    
+    for note_id, body in sorted(notes.items()):
+        gt_findings = ground_truth[note_id]
+        detected = run_fn(body)
+        
+        gt_by_cat = {cat: [] for cat in CANONICAL_CATEGORIES}
+        for gt in gt_findings:
+            cat = to_canonical(gt["type"])
+            if cat in gt_by_cat:
+                gt_by_cat[cat].append(gt)
+                
+        det_by_cat = {cat: [] for cat in CANONICAL_CATEGORIES}
+        for det in detected:
+            cat = to_canonical(det["type"])
+            if cat in det_by_cat:
+                det_by_cat[cat].append(det)
+                
+        for cat in CANONICAL_CATEGORIES:
+            gts = gt_by_cat[cat]
+            dets = det_by_cat[cat]
+            
+            matched_gt = set()
+            matched_detected = set()
+            
+            for gt_idx, gt in enumerate(gts):
+                for det_idx, det in enumerate(dets):
+                    det_span = {"start": det["start"], "end": det["end"]}
+                    if overlaps(gt, det_span):
+                        matched_gt.add(gt_idx)
+                        matched_detected.add(det_idx)
+                        
+            metrics[cat]["tp"] += len(matched_gt)
+            metrics[cat]["fn"] += len(gts) - len(matched_gt)
+            metrics[cat]["fp"] += len(dets) - len(matched_detected)
+            
+    results = {}
+    for cat in CANONICAL_CATEGORIES:
+        tp = metrics[cat]["tp"]
+        fp = metrics[cat]["fp"]
+        fn = metrics[cat]["fn"]
+        
+        precision = (tp / (tp + fp)) if (tp + fp) > 0 else (1.0 if fn == 0 else 0.0)
+        recall = (tp / (tp + fn)) if (tp + fn) > 0 else 1.0
+        f1 = (2 * precision * recall / (precision + recall)) if (precision + recall) > 0 else 0.0
+        
+        results[cat] = {
+            "tp": tp,
+            "fp": fp,
+            "fn": fn,
+            "precision": precision,
+            "recall": recall,
+            "f1": f1
+        }
+    return results
+
+def make_markdown_table(results):
+    lines = [
+        "| Entity Category | True Positives (TP) | False Positives (FP) | False Negatives (FN) | Precision | Recall | F1-Score |",
+        "| :--- | :---: | :---: | :---: | :---: | :---: | :---: |"
+    ]
+    for cat in CANONICAL_CATEGORIES:
+        r = results[cat]
+        p_str = f"{r['precision']:.2%}" if r['precision'] is not None else "N/A"
+        r_str = f"{r['recall']:.2%}" if r['recall'] is not None else "N/A"
+        f_str = f"{r['f1']:.2%}" if r['f1'] is not None else "N/A"
+        lines.append(f"| **{cat}** | {r['tp']} | {r['fp']} | {r['fn']} | {p_str} | {r_str} | {f_str} |")
+    return "\n".join(lines)
+
+
 def evaluate_config(notes, ground_truth, run_fn):
     tp = 0
     fp = 0
@@ -309,6 +416,11 @@ def main():
     
     # Evaluate Combined-Proxy (Combined Pipeline)
     run_combined = lambda body: resolve_all_overlaps(regex_scan(body)["findings"] + scanner.scan_and_redact(body)["findings"])
+    
+    # Evaluate per-entity accuracy for the three configs
+    results_regex = evaluate_per_entity(notes, ground_truth, run_regex)
+    results_nlp = evaluate_per_entity(notes, ground_truth, run_nlp)
+    results_combined = evaluate_per_entity(notes, ground_truth, run_combined)
     
     # Collect detailed results for Combined Proxy
     global_tp = 0
@@ -499,7 +611,22 @@ The metrics below summarize the results after implementing our precision improve
 
 ---
 
-## 2. HIPAA Safe Harbor Mapping (18 Identifiers)
+## 2. Detailed Performance by Entity Type
+
+Below is the strict category-specific performance (Precision, Recall, F1-Score) for each de-identification configuration across all 13 canonical categories of PHI.
+
+### Combined-Proxy (Production)
+{make_markdown_table(results_combined)}
+
+### Regex-Baseline comparison
+{make_markdown_table(results_regex)}
+
+### Presidio-NLP comparison
+{make_markdown_table(results_nlp)}
+
+---
+
+## 3. HIPAA Safe Harbor Mapping (18 Identifiers)
 
 Under the HIPAA Safe Harbor method, 18 categories of patient data must be redacted to achieve de-identification. Out of these 18 identifiers, our combined pipeline successfully supports and redacts **13 identifiers**:
 
@@ -526,7 +653,7 @@ Under the HIPAA Safe Harbor method, 18 categories of patient data must be redact
 
 ---
 
-## 3. De-identification Data Flow
+## 4. De-identification Data Flow
 
 The following diagram illustrates how the Combined Pipeline extracts and resolves PHI findings from clinical notes:
 
@@ -549,7 +676,7 @@ graph TD
 
 ---
 
-## 4. Error Analysis & Root Cause
+## 5. Error Analysis & Root Cause
 
 ### A. False Negatives (Missed PHI) — {global_fn} occurrences
 The remaining area of improvement is addressing the **{global_fn} missed PHI occurrences** (False Negatives), which fall into two specific categories:
@@ -572,7 +699,7 @@ The Precision improvement filters successfully resolved all false positives for 
 
 ---
 
-## 5. Future Recommendations
+## 6. Future Recommendations
 
 To achieve **>98% Recall** while maintaining **>99% Precision**, we recommend:
 
@@ -583,6 +710,7 @@ To achieve **>98% Recall** while maintaining **>99% Precision**, we recommend:
 
     with open(_PROJECT_ROOT / "docs" / "accuracy_report.md", "w", encoding="utf-8") as f:
         f.write(accuracy_report_content)
+
         
     print("\nSuccessfully updated:")
     print(f"  - {_PROJECT_ROOT / 'detection_report.md'}")
