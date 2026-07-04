@@ -1,4 +1,3 @@
-import os
 import time
 import logging
 import functools
@@ -39,8 +38,32 @@ class Vault:
     @track_latency
     def redact_note(self, session_id: str, text: str, nlp_entities: List[Dict[str, Any]], confidence_threshold: float = 0.7) -> Tuple[str, List[Dict[str, Any]]]:
         """
-        Redacts sensitive entities in the provided text using the given NLP outputs.
-        Returns a tuple of (redacted_text, processed_entities_with_tokens).
+        Redact sensitive entities in *text* and store the token map in Redis.
+
+        Processing steps:
+            1. Filter *nlp_entities* by *confidence_threshold* via :class:`NLPAdapter`.
+            2. For each qualifying entity, retrieve an existing token or create a new
+               one via :class:`TokenStore` (idempotent — same name → same token).
+            3. Replace every occurrence of each entity text in *text* with its token.
+
+        Args:
+            session_id:           UUID that scopes all tokens to this clinical session.
+            text:                 The raw clinical note containing PHI/PII.
+            nlp_entities:         List of detected entities from the regex + NLP scanners.
+                                  Each dict must contain ``text`` (str), ``type`` (str),
+                                  and optionally ``confidence`` (float, defaults to 1.0).
+            confidence_threshold: Minimum confidence score required to redact an entity.
+                                  Entities below this threshold are silently skipped.
+
+        Returns:
+            A tuple of:
+                redacted_text (str)        — the note with PHI replaced by tokens
+                processed_entities (list)  — each dict contains ``text``, ``token``,
+                                             and ``type`` for every entity that was
+                                             actually redacted
+
+        Raises:
+            VaultError: If the underlying token store or text engine raises.
         """
         try:
             # 1. Process NLP entities to generate or retrieve tokens
@@ -57,7 +80,23 @@ class Vault:
     @track_latency
     def restore_note(self, session_id: str, redacted_text: str) -> str:
         """
-        Restores a redacted note back to its original form using tokens stored in the session.
+        Restore a redacted note back to its original form using the session token map.
+
+        All pseudonym tokens present in *redacted_text* (matching the pattern
+        ``[A-Z]+_\d+``) are looked up in Redis under the given *session_id*,
+        decrypted, and substituted back into the text.
+
+        Args:
+            session_id:    UUID of the session whose token map should be used.
+            redacted_text: Text containing pseudonym tokens to replace.
+
+        Returns:
+            The restored text with original PHI values reinstated.  Tokens that
+            cannot be found in the session are left unchanged and a warning is
+            logged for each one.
+
+        Raises:
+            VaultError: If the underlying token store or text engine raises.
         """
         try:
             restored_text = TextEngine.restore(session_id, redacted_text, self.token_store)
@@ -67,7 +106,22 @@ class Vault:
             raise VaultError(f"Failed to restore note: {str(e)}") from e
 
     def clear_session(self, session_id: str) -> int:
-        """Delete all vault keys for a session. Returns count of keys removed."""
+        """
+        Delete all Vault keys for a session from Redis.
+
+        Removes all three key types (NAME, TOKEN, COUNTER) that belong to
+        *session_id* in a single ``DEL`` command.
+
+        Args:
+            session_id: UUID of the session to purge.
+
+        Returns:
+            The number of Redis keys that were deleted (0 if the session did
+            not exist or had already expired).
+
+        Raises:
+            VaultError: If the Redis ``DEL`` operation fails.
+        """
         pattern = f"{session_id}:*"
         try:
             keys = self.redis.keys(pattern)
