@@ -10,6 +10,7 @@ class ViewVault extends HTMLElement {
         <p class="text-sm text-muted mt-1">Active token maps stored in Redis</p>
       </header>
 
+      
       <!-- Metrics Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl">
         <div class="bg-white border border-cream-200 rounded-xl p-5 shadow-sm">
