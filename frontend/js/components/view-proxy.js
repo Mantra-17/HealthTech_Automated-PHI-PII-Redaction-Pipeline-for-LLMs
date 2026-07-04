@@ -15,7 +15,8 @@ class ViewProxy extends HTMLElement {
           <span>Org control boundary</span>
         </div>
       </header>
-
+    
+      
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         <!-- Input -->

@@ -10,7 +10,7 @@ const USE_BACKEND = true;
 let sessions = [];
 const auditEvents = [];
 let currentSession = null;
-let currentUser = null; // Set dynamically upon gateway authorization
+let currentUser = null; //Set dynamically upon gateway authorization
 
 // ── DOM References ───────────────────────────────────────────────
 const inputNote      = document.getElementById("input-note");
@@ -20,6 +20,7 @@ const tokenMapEl     = document.getElementById("token-map");
 const btnRedact      = document.getElementById("btn-redact");
 const btnSendAI      = document.getElementById("btn-send-ai");
 const btnClear       = document.getElementById("btn-clear");
+
 
 // ── Navigation ───────────────────────────────────────────────────
 document.querySelectorAll(".nav-item").forEach((item) => {
