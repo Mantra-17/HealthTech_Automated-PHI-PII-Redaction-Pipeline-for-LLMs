@@ -2,6 +2,7 @@
  * app-sidebar.js — Custom Web Component for Sidebar
  */
 
+
 class AppSidebar extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
