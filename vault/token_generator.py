@@ -1,9 +1,32 @@
+"""
+vault/token_generator.py
+------------------------
+Atomic sequential token counter backed by Redis.
+
+Using Redis ``INCR`` guarantees that every call to :meth:`TokenGenerator.generate_token`
+receives a unique, monotonically increasing sequence number *even when multiple
+Flask worker threads process requests concurrently*. No file locks, no Python-level
+mutexes — Redis handles mutual exclusion at the data-structure level.
+"""
+
 import redis
 import logging
 
 logger = logging.getLogger(__name__)
 
+
 class TokenGenerator:
+    """
+    Generates sequential, human-readable pseudonym tokens for each PHI/PII
+    entity type within a session.
+
+    Token format: ``<ENTITY_TYPE>_<zero-padded counter>``
+    Examples:     ``PATIENT_001``, ``PHONE_003``, ``EMAIL_002``
+
+    Each session + entity-type pair maintains its own independent counter so
+    tokens never collide across entity types or across redaction sessions.
+    The counter key stored in Redis is: ``<session_id>:COUNTER:<entity_type>``
+    """
     def __init__(self, redis_client: redis.Redis):
         self.redis = redis_client
 
