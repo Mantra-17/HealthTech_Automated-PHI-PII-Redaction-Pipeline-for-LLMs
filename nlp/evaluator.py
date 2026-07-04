@@ -7,9 +7,11 @@ Supports exact vs. overlap matching and strict vs. boundary-only type constraint
 from __future__ import annotations
 
 import argparse
+import bisect
 import json
 import os
 import sys
+from collections import defaultdict
 from typing import Any, TypedDict, Dict, List, Set, Tuple
 
 
@@ -90,45 +92,64 @@ class NLPEvaluator:
         gt_list = [dict(g) for g in ground_truth]
         pred_list = [dict(p) for p in predictions]
 
-        # Calculate matching scores for all possible pairs
+        # Precompute lowercase type representations to avoid O(M * N) conversions
+        gt_types = [str(g.get("type", "")).lower() for g in gt_list]
+        pred_types = [str(p.get("type", "")).lower() for p in pred_list]
+
         candidates = []
-        for gt_idx, gt in enumerate(gt_list):
+
+        if self.mode == "exact":
+            # Index predictions by boundary span (start, end)
+            pred_by_span = defaultdict(list)
             for pred_idx, pred in enumerate(pred_list):
-                # 1. Type constraint check
-                if self.strict_type:
-                    if str(gt.get("type", "")).lower() != str(pred.get("type", "")).lower():
+                pred_by_span[(pred["start"], pred["end"])].append((pred_idx, pred))
+
+            for gt_idx, gt in enumerate(gt_list):
+                span = (gt["start"], gt["end"])
+                for pred_idx, pred in pred_by_span[span]:
+                    # Type constraint check
+                    if self.strict_type and gt_types[gt_idx] != pred_types[pred_idx]:
+                        continue
+                    # Exact matches have a score of 1.0
+                    candidates.append((gt_idx, pred_idx, 1.0, gt["start"], pred["start"]))
+
+        elif self.mode == "overlap":
+            # Sort predictions by start position to allow binary search pruning
+            sorted_preds = sorted(
+                [(p["start"], p["end"], idx) for idx, p in enumerate(pred_list)],
+                key=lambda x: x[0]
+            )
+            sorted_starts = [x[0] for x in sorted_preds]
+
+            for gt_idx, gt in enumerate(gt_list):
+                gt_start = gt["start"]
+                gt_end = gt["end"]
+
+                # Find the first prediction starting at or after gt_end.
+                # Any prediction at or after this point cannot overlap since pred_start >= gt_end.
+                limit_idx = bisect.bisect_left(sorted_starts, gt_end)
+
+                for i in range(limit_idx):
+                    pred_start, pred_end, pred_idx = sorted_preds[i]
+
+                    # Type constraint check
+                    if self.strict_type and gt_types[gt_idx] != pred_types[pred_idx]:
                         continue
 
-                # 2. Boundary constraint check
-                matched = False
-                score = 0.0
-                if self.mode == "exact":
-                    if gt["start"] == pred["start"] and gt["end"] == pred["end"]:
-                        matched = True
-                        score = 1.0
-                elif self.mode == "overlap":
-                    if self.overlaps(gt["start"], gt["end"], pred["start"], pred["end"]):
-                        matched = True
-                        score = self.compute_iou(gt["start"], gt["end"], pred["start"], pred["end"])
+                    # Overlap check (optimized using local variables)
+                    if gt_start < pred_end and pred_start < gt_end:
+                        score = self.compute_iou(gt_start, gt_end, pred_start, pred_end)
+                        candidates.append((gt_idx, pred_idx, score, gt_start, pred_start))
 
-                if matched:
-                    candidates.append((gt_idx, pred_idx, score))
-
-        # Sort candidates: highest score first, then start position
-        candidates.sort(
-            key=lambda x: (
-                -x[2],  # Descending score
-                gt_list[x[0]]["start"],
-                pred_list[x[1]]["start"]
-            )
-        )
+        # Sort candidates: highest score first, then start positions
+        candidates.sort(key=lambda x: (-x[2], x[3], x[4]))
 
         matched_gt_indices: Set[int] = set()
         matched_pred_indices: Set[int] = set()
         matched_pairs: List[Tuple[Entity, Entity, float]] = []
 
         # Greedy match selection
-        for gt_idx, pred_idx, score in candidates:
+        for gt_idx, pred_idx, score, _, _ in candidates:
             if gt_idx not in matched_gt_indices and pred_idx not in matched_pred_indices:
                 matched_gt_indices.add(gt_idx)
                 matched_pred_indices.add(pred_idx)
