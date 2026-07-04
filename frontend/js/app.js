@@ -21,6 +21,7 @@ const btnRedact      = document.getElementById("btn-redact");
 const btnSendAI      = document.getElementById("btn-send-ai");
 const btnClear       = document.getElementById("btn-clear");
 
+
 // ── Navigation ───────────────────────────────────────────────────
 document.querySelectorAll(".nav-item").forEach((item) => {
   item.addEventListener("click", (e) => {
