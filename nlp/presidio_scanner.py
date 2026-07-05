@@ -58,6 +58,11 @@ HEADERS_TO_EXCLUDE = {
     "us", "er", "ent"
 }
 
+# Pre-compiled regular expressions for performance optimization
+PUNCT_STRIP_RE = re.compile(r'^[^a-z0-9]+|[^a-z0-9]+$')
+PERSON_INVALID_CHARS_RE = re.compile(r'[\d+@/\\:#_\[\]=]')
+EPONYMS_RE = re.compile(r'|'.join(EPONYMS))
+
 def is_false_positive(word: str, entity_type: str) -> bool:
     """
     Checks if a detected word is a false positive based on clinical context and clean name rules.
@@ -65,7 +70,7 @@ def is_false_positive(word: str, entity_type: str) -> bool:
     word_clean = word.strip().lower()
     
     # Strip common non-alphanumeric punctuation from borders (e.g. "SSN:" -> "ssn")
-    word_alphanumeric = re.sub(r'^[^a-z0-9]+|[^a-z0-9]+$', '', word_clean)
+    word_alphanumeric = PUNCT_STRIP_RE.sub('', word_clean)
     
     # Rule 1: Exclude common clinical headers/meta-terms from PERSON, ORGANIZATION, and LOCATION
     if entity_type in ("PERSON", "ORGANIZATION", "LOCATION"):
@@ -75,12 +80,11 @@ def is_false_positive(word: str, entity_type: str) -> bool:
     # Rule 2: Specific validation for PERSON names
     if entity_type == "PERSON":
         # Person names should not contain numbers or clinical symbols
-        if any(char.isdigit() or char in "+@/\\:#_[]=" for char in word):
+        if PERSON_INVALID_CHARS_RE.search(word):
             return True
         # Person names should not contain known disease eponyms (e.g. "Parkinson's disease")
-        for ep in EPONYMS:
-            if ep in word_clean:
-                return True
+        if EPONYMS_RE.search(word_clean):
+            return True
         # Person names are usually longer than a single character
         if len(word_alphanumeric) <= 1:
             return True
@@ -151,14 +155,28 @@ class PresidioScanner:
             "INSURANCE_ID": "[INSURANCE_REDACTED]",
             "LICENSE_NUMBER": "[LICENSE_REDACTED]",
         }
+        
+        # Precompute supported entity list to avoid rebuilding it on every scan
+        self.supported_entities = list(self.redaction_labels.keys())
+
+        # Pre-build OperatorConfig objects to avoid repeatedly initializing them on every scan
+        self.operators = {
+            entity_name: OperatorConfig("replace", {"new_value": label})
+            for entity_name, label in self.redaction_labels.items()
+        }
 
     def scan_and_redact(self, text: str) -> ScanResult:
         """
         Scan text for PII/PHI using Presidio (with spaCy NER) and redact it.
         """
         start_time = time.perf_counter()
-        # 1. Analyze text to find PII entities
-        raw_results = self.analyzer.analyze(text=text, language="en")
+        
+        # 1. Analyze text to find PII entities (restricted to supported entities for optimization)
+        raw_results = self.analyzer.analyze(
+            text=text,
+            language="en",
+            entities=self.supported_entities
+        )
         
         # Filter analyzer results to only include those we explicitly support and are not false positives
         analyzer_results = [
@@ -173,33 +191,22 @@ class PresidioScanner:
         
         for result in analyzer_results:
             ent_type = result.entity_type
-            # Keep only the entities we want to redact or have defined labels for
-            if ent_type in self.redaction_labels:
-                orig_val = text[result.start:result.end]
-                findings.append({
-                    "type": ent_type.lower(),
-                    "original_value": orig_val,
-                    "start": result.start,
-                    "end": result.end
-                })
-                
-                # Update count
-                type_lower = ent_type.lower()
-                summary[type_lower] = summary.get(type_lower, 0) + 1
+            orig_val = text[result.start:result.end]
+            type_lower = ent_type.lower()
+            
+            findings.append({
+                "type": type_lower,
+                "original_value": orig_val,
+                "start": result.start,
+                "end": result.end
+            })
+            summary[type_lower] = summary.get(type_lower, 0) + 1
 
-        # 3. Anonymize the text using the AnonymizerEngine
-        # Setup operator configurations for each entity type we support
-        operators = {}
-        for entity_name, label in self.redaction_labels.items():
-            operators[entity_name] = OperatorConfig(
-                "replace", 
-                {"new_value": label}
-            )
-
+        # 3. Anonymize the text using the AnonymizerEngine using pre-configured operators
         anonymized_result = self.anonymizer.anonymize(
             text=text,
             analyzer_results=analyzer_results,
-            operators=operators
+            operators=self.operators
         )
         
         duration_ms = (time.perf_counter() - start_time) * 1000
