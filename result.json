@@ -1,0 +1,1102 @@
+{
+  "total_notes": 15,
+  "issues": 0,
+  "notes": {
+    "NOTE_001": {
+      "total_phi_found": 8,
+      "redaction_summary": {
+        "date": 1,
+        "mrn": 1,
+        "insurance": 1,
+        "phone": 1,
+        "email": 1,
+        "aadhaar": 1,
+        "license": 1,
+        "pin": 1
+      },
+      "medical_term_violations": [],
+      "findings": [
+        {
+          "type": "date",
+          "original_value": "14/02/1985",
+          "start": 27,
+          "end": 37
+        },
+        {
+          "type": "mrn",
+          "original_value": "MRN-12345",
+          "start": 39,
+          "end": 48
+        },
+        {
+          "type": "insurance",
+          "original_value": "INS-111111-A",
+          "start": 69,
+          "end": 81
+        },
+        {
+          "type": "phone",
+          "original_value": "+91-98765-43210",
+          "start": 92,
+          "end": 107
+        },
+        {
+          "type": "email",
+          "original_value": "rahul.sharma@gmail.com",
+          "start": 115,
+          "end": 137
+        },
+        {
+          "type": "aadhaar",
+          "original_value": "1234 5678 9012",
+          "start": 160,
+          "end": 174
+        },
+        {
+          "type": "license",
+          "original_value": "MH-2024-7890",
+          "start": 193,
+          "end": 205
+        },
+        {
+          "type": "pin",
+          "original_value": "400001",
+          "start": 235,
+          "end": 241
+        }
+      ],
+      "redacted_text": "Patient Rahul Sharma, DOB: [DATE_REDACTED], [MRN_REDACTED], holds insurance ID [INSURANCE_REDACTED]. Contact: [PHONE_REDACTED], email [EMAIL_REDACTED]. Aadhaar card number: [AADHAAR_REDACTED]. Driver's license [LICENSE_REDACTED]. Address: 42 MG Road, Mumbai [PIN_REDACTED]."
+    },
+    "NOTE_002": {
+      "total_phi_found": 9,
+      "redaction_summary": {
+        "date": 2,
+        "mrn": 1,
+        "phone": 1,
+        "email": 1,
+        "ssn": 1,
+        "insurance": 1,
+        "license": 1,
+        "zip": 1
+      },
+      "medical_term_violations": [],
+      "findings": [
+        {
+          "type": "date",
+          "original_value": "June 14 1989",
+          "start": 27,
+          "end": 39
+        },
+        {
+          "type": "date",
+          "original_value": "June 14 2026",
+          "start": 52,
+          "end": 64
+        },
+        {
+          "type": "mrn",
+          "original_value": "MRN-54321",
+          "start": 66,
+          "end": 75
+        },
+        {
+          "type": "phone",
+          "original_value": "(312) 555-7812",
+          "start": 84,
+          "end": 98
+        },
+        {
+          "type": "email",
+          "original_value": "sarah.j@outlook.com",
+          "start": 107,
+          "end": 126
+        },
+        {
+          "type": "ssn",
+          "original_value": "123-45-6789",
+          "start": 133,
+          "end": 144
+        },
+        {
+          "type": "insurance",
+          "original_value": "INS-222222-B",
+          "start": 162,
+          "end": 174
+        },
+        {
+          "type": "license",
+          "original_value": "CA-2025-98765",
+          "start": 184,
+          "end": 197
+        },
+        {
+          "type": "zip",
+          "original_value": "60614",
+          "start": 234,
+          "end": 239
+        }
+      ],
+      "redacted_text": "Patient Sarah Johnson, DOB [DATE_REDACTED], visited on [DATE_REDACTED]. [MRN_REDACTED]. Phone: [PHONE_REDACTED], email: [EMAIL_REDACTED]. SSN: [SSN_REDACTED]. Insurance plan: [INSURANCE_REDACTED]. License [LICENSE_REDACTED]. Address: 1187 Pine St, Chicago, IL [ZIP_REDACTED]."
+    },
+    "NOTE_003": {
+      "total_phi_found": 9,
+      "redaction_summary": {
+        "date": 2,
+        "mrn": 1,
+        "phone": 1,
+        "email": 1,
+        "aadhaar": 1,
+        "insurance": 1,
+        "license": 1,
+        "pin": 1
+      },
+      "medical_term_violations": [],
+      "findings": [
+        {
+          "type": "date",
+          "original_value": "1980-05-12",
+          "start": 26,
+          "end": 36
+        },
+        {
+          "type": "date",
+          "original_value": "2026-07-15",
+          "start": 51,
+          "end": 61
+        },
+        {
+          "type": "mrn",
+          "original_value": "MRN-99999",
+          "start": 63,
+          "end": 72
+        },
+        {
+          "type": "phone",
+          "original_value": "9123456789",
+          "start": 83,
+          "end": 93
+        },
+        {
+          "type": "email",
+          "original_value": "vikram.iyer@health.in",
+          "start": 102,
+          "end": 123
+        },
+        {
+          "type": "aadhaar",
+          "original_value": "987654321234",
+          "start": 134,
+          "end": 146
+        },
+        {
+          "type": "insurance",
+          "original_value": "INS-333333-C",
+          "start": 169,
+          "end": 181
+        },
+        {
+          "type": "license",
+          "original_value": "KA-2023-54321",
+          "start": 200,
+          "end": 213
+        },
+        {
+          "type": "pin",
+          "original_value": "560034",
+          "start": 247,
+          "end": 253
+        }
+      ],
+      "redacted_text": "Patient Vikram Iyer, DOB: [DATE_REDACTED], presented on [DATE_REDACTED]. [MRN_REDACTED]. Contact: [PHONE_REDACTED], email: [EMAIL_REDACTED]. Aadhaar: [AADHAAR_REDACTED]. Insurance reference: [INSURANCE_REDACTED]. Medical license: [LICENSE_REDACTED]. Address: 9 Lake Road, Bengaluru [PIN_REDACTED]."
+    },
+    "NOTE_004": {
+      "total_phi_found": 9,
+      "redaction_summary": {
+        "date": 2,
+        "mrn": 1,
+        "phone": 1,
+        "email": 1,
+        "ssn": 1,
+        "insurance": 1,
+        "license": 1,
+        "zip": 1
+      },
+      "medical_term_violations": [],
+      "findings": [
+        {
+          "type": "date",
+          "original_value": "09/12/1992",
+          "start": 27,
+          "end": 37
+        },
+        {
+          "type": "date",
+          "original_value": "03/19/2026",
+          "start": 50,
+          "end": 60
+        },
+        {
+          "type": "mrn",
+          "original_value": "MRN-22222",
+          "start": 62,
+          "end": 71
+        },
+        {
+          "type": "phone",
+          "original_value": "646-555-3819",
+          "start": 80,
+          "end": 92
+        },
+        {
+          "type": "email",
+          "original_value": "emily.turner@hospital.com",
+          "start": 101,
+          "end": 126
+        },
+        {
+          "type": "ssn",
+          "original_value": "987-12-3456",
+          "start": 133,
+          "end": 144
+        },
+        {
+          "type": "insurance",
+          "original_value": "INS-444444-D",
+          "start": 157,
+          "end": 169
+        },
+        {
+          "type": "license",
+          "original_value": "NY-2022-11111",
+          "start": 187,
+          "end": 200
+        },
+        {
+          "type": "zip",
+          "original_value": "10011",
+          "start": 239,
+          "end": 244
+        }
+      ],
+      "redacted_text": "Patient Emily Turner, DOB: [DATE_REDACTED], visited on [DATE_REDACTED]. [MRN_REDACTED]. Phone: [PHONE_REDACTED], email: [EMAIL_REDACTED]. SSN: [SSN_REDACTED]. Insurance: [INSURANCE_REDACTED]. Driver license: [LICENSE_REDACTED]. Address: 75 Brook Lane, New York, NY [ZIP_REDACTED]."
+    },
+    "NOTE_005": {
+      "total_phi_found": 11,
+      "redaction_summary": {
+        "date": 2,
+        "mrn": 1,
+        "phone": 1,
+        "email": 1,
+        "aadhaar": 1,
+        "insurance": 1,
+        "license": 1,
+        "pin": 1,
+        "ip": 1,
+        "url": 1
+      },
+      "medical_term_violations": [],
+      "findings": [
+        {
+          "type": "date",
+          "original_value": "1978-08-22",
+          "start": 24,
+          "end": 34
+        },
+        {
+          "type": "date",
+          "original_value": "2026-06-02",
+          "start": 49,
+          "end": 59
+        },
+        {
+          "type": "mrn",
+          "original_value": "MRN-33333",
+          "start": 61,
+          "end": 70
+        },
+        {
+          "type": "phone",
+          "original_value": "+91-99887-66554",
+          "start": 79,
+          "end": 94
+        },
+        {
+          "type": "email",
+          "original_value": "abdul.khan@care.in",
+          "start": 103,
+          "end": 121
+        },
+        {
+          "type": "aadhaar",
+          "original_value": "456712348890",
+          "start": 132,
+          "end": 144
+        },
+        {
+          "type": "insurance",
+          "original_value": "INS-555555-E",
+          "start": 157,
+          "end": 169
+        },
+        {
+          "type": "license",
+          "original_value": "RJ-2021-2222",
+          "start": 179,
+          "end": 191
+        },
+        {
+          "type": "pin",
+          "original_value": "302001",
+          "start": 226,
+          "end": 232
+        },
+        {
+          "type": "ip",
+          "original_value": "10.14.22.9",
+          "start": 260,
+          "end": 270
+        },
+        {
+          "type": "url",
+          "original_value": "www.citycare.in/portal.",
+          "start": 284,
+          "end": 307
+        }
+      ],
+      "redacted_text": "Patient Abdul Khan, DOB [DATE_REDACTED], evaluated on [DATE_REDACTED]. [MRN_REDACTED]. Phone: [PHONE_REDACTED], email: [EMAIL_REDACTED]. Aadhaar: [AADHAAR_REDACTED]. Insurance: [INSURANCE_REDACTED]. License [LICENSE_REDACTED]. Address: 12 Residency Rd, Jaipur [PIN_REDACTED]. Connected from triage IP: [IP_REDACTED], portal URL: [URL_REDACTED]"
+    },
+    "NOTE_006": {
+      "total_phi_found": 10,
+      "redaction_summary": {
+        "date": 2,
+        "mrn": 1,
+        "phone": 1,
+        "email": 1,
+        "ssn": 1,
+        "insurance": 1,
+        "license": 1,
+        "zip": 1,
+        "ip": 1
+      },
+      "medical_term_violations": [],
+      "findings": [
+        {
+          "type": "date",
+          "original_value": "October 10 1975",
+          "start": 28,
+          "end": 43
+        },
+        {
+          "type": "date",
+          "original_value": "April 16 2026",
+          "start": 58,
+          "end": 71
+        },
+        {
+          "type": "mrn",
+          "original_value": "MRN-44444",
+          "start": 73,
+          "end": 82
+        },
+        {
+          "type": "phone",
+          "original_value": "(415) 555-2840",
+          "start": 91,
+          "end": 105
+        },
+        {
+          "type": "email",
+          "original_value": "l.mitchell@bay.net",
+          "start": 114,
+          "end": 132
+        },
+        {
+          "type": "ssn",
+          "original_value": "533-18-6245",
+          "start": 139,
+          "end": 150
+        },
+        {
+          "type": "insurance",
+          "original_value": "INS-666666-F",
+          "start": 169,
+          "end": 181
+        },
+        {
+          "type": "license",
+          "original_value": "CA-2026-33333",
+          "start": 191,
+          "end": 204
+        },
+        {
+          "type": "zip",
+          "original_value": "94107",
+          "start": 216,
+          "end": 221
+        },
+        {
+          "type": "ip",
+          "original_value": "172.16.44.101",
+          "start": 251,
+          "end": 264
+        }
+      ],
+      "redacted_text": "Patient Laura Mitchell, DOB [DATE_REDACTED], presented on [DATE_REDACTED]. [MRN_REDACTED]. Phone: [PHONE_REDACTED], email: [EMAIL_REDACTED]. SSN: [SSN_REDACTED]. Insurance policy [INSURANCE_REDACTED]. License [LICENSE_REDACTED]. Zip code: [ZIP_REDACTED]. Access from workstation IP: [IP_REDACTED]."
+    },
+    "NOTE_007": {
+      "total_phi_found": 9,
+      "redaction_summary": {
+        "date": 2,
+        "mrn": 1,
+        "phone": 1,
+        "email": 1,
+        "ssn": 1,
+        "insurance": 1,
+        "license": 1,
+        "zip": 1
+      },
+      "medical_term_violations": [],
+      "findings": [
+        {
+          "type": "date",
+          "original_value": "1965-03-12",
+          "start": 29,
+          "end": 39
+        },
+        {
+          "type": "date",
+          "original_value": "2026-05-10",
+          "start": 54,
+          "end": 64
+        },
+        {
+          "type": "mrn",
+          "original_value": "MRN-55555",
+          "start": 66,
+          "end": 75
+        },
+        {
+          "type": "phone",
+          "original_value": "206-555-0144",
+          "start": 84,
+          "end": 96
+        },
+        {
+          "type": "email",
+          "original_value": "john.parkinson@clinic.org",
+          "start": 105,
+          "end": 130
+        },
+        {
+          "type": "ssn",
+          "original_value": "667-24-8931",
+          "start": 137,
+          "end": 148
+        },
+        {
+          "type": "insurance",
+          "original_value": "INS-777777-G",
+          "start": 158,
+          "end": 170
+        },
+        {
+          "type": "license",
+          "original_value": "WA-2025-44444",
+          "start": 180,
+          "end": 193
+        },
+        {
+          "type": "zip",
+          "original_value": "98101",
+          "start": 205,
+          "end": 210
+        }
+      ],
+      "redacted_text": "Patient John Parkinson, DOB: [DATE_REDACTED], presented on [DATE_REDACTED]. [MRN_REDACTED]. Phone: [PHONE_REDACTED], email: [EMAIL_REDACTED]. SSN: [SSN_REDACTED]. Policy: [INSURANCE_REDACTED]. License [LICENSE_REDACTED]. Zip code: [ZIP_REDACTED]. Chief complaint: resting tremor and rigidity. Clinical findings are highly suggestive of progressive Parkinson's disease. Referred to neurology."
+    },
+    "NOTE_008": {
+      "total_phi_found": 8,
+      "redaction_summary": {
+        "date": 1,
+        "mrn": 1,
+        "insurance": 1,
+        "phone": 1,
+        "email": 1,
+        "aadhaar": 1,
+        "license": 1,
+        "pin": 1
+      },
+      "medical_term_violations": [],
+      "findings": [
+        {
+          "type": "date",
+          "original_value": "11/01/1993",
+          "start": 25,
+          "end": 35
+        },
+        {
+          "type": "mrn",
+          "original_value": "MRN-77777",
+          "start": 37,
+          "end": 46
+        },
+        {
+          "type": "insurance",
+          "original_value": "INS-888888-H",
+          "start": 56,
+          "end": 68
+        },
+        {
+          "type": "phone",
+          "original_value": "+91 98765 12345",
+          "start": 79,
+          "end": 94
+        },
+        {
+          "type": "email",
+          "original_value": "neha.desai@apollo.com",
+          "start": 102,
+          "end": 123
+        },
+        {
+          "type": "aadhaar",
+          "original_value": "2345 6789 1201",
+          "start": 134,
+          "end": 148
+        },
+        {
+          "type": "license",
+          "original_value": "GJ-2024-55555",
+          "start": 158,
+          "end": 171
+        },
+        {
+          "type": "pin",
+          "original_value": "380009",
+          "start": 211,
+          "end": 217
+        }
+      ],
+      "redacted_text": "Patient Neha Desai, DOB: [DATE_REDACTED], [MRN_REDACTED], policy: [INSURANCE_REDACTED]. Contact: [PHONE_REDACTED], email [EMAIL_REDACTED]. Aadhaar: [AADHAAR_REDACTED]. License [LICENSE_REDACTED]. Address: 4 Riverfront Apts, Ahmedabad [PIN_REDACTED]."
+    },
+    "NOTE_009": {
+      "total_phi_found": 9,
+      "redaction_summary": {
+        "date": 2,
+        "mrn": 1,
+        "phone": 1,
+        "email": 1,
+        "ssn": 1,
+        "insurance": 1,
+        "license": 1,
+        "zip": 1
+      },
+      "medical_term_violations": [],
+      "findings": [
+        {
+          "type": "date",
+          "original_value": "May 05 1970",
+          "start": 26,
+          "end": 37
+        },
+        {
+          "type": "date",
+          "original_value": "June 05 2026",
+          "start": 50,
+          "end": 62
+        },
+        {
+          "type": "mrn",
+          "original_value": "MRN-91111",
+          "start": 64,
+          "end": 73
+        },
+        {
+          "type": "phone",
+          "original_value": "(202) 555-2711",
+          "start": 82,
+          "end": 96
+        },
+        {
+          "type": "email",
+          "original_value": "robert.hayes@metro.us",
+          "start": 105,
+          "end": 126
+        },
+        {
+          "type": "ssn",
+          "original_value": "111-22-3333",
+          "start": 133,
+          "end": 144
+        },
+        {
+          "type": "insurance",
+          "original_value": "INS-999999-I",
+          "start": 161,
+          "end": 173
+        },
+        {
+          "type": "license",
+          "original_value": "DC-2023-66666",
+          "start": 183,
+          "end": 196
+        },
+        {
+          "type": "zip",
+          "original_value": "20009",
+          "start": 203,
+          "end": 208
+        }
+      ],
+      "redacted_text": "Patient Robert Hayes, DOB [DATE_REDACTED], visited on [DATE_REDACTED]. [MRN_REDACTED]. Phone: [PHONE_REDACTED], email: [EMAIL_REDACTED]. SSN: [SSN_REDACTED]. Policy number: [INSURANCE_REDACTED]. License [LICENSE_REDACTED]. Zip: [ZIP_REDACTED]."
+    },
+    "NOTE_010": {
+      "total_phi_found": 9,
+      "redaction_summary": {
+        "date": 2,
+        "mrn": 1,
+        "phone": 1,
+        "email": 1,
+        "aadhaar": 1,
+        "insurance": 1,
+        "license": 1,
+        "pin": 1
+      },
+      "medical_term_violations": [],
+      "findings": [
+        {
+          "type": "date",
+          "original_value": "12-06-2026",
+          "start": 26,
+          "end": 36
+        },
+        {
+          "type": "date",
+          "original_value": "05/12/1988",
+          "start": 55,
+          "end": 65
+        },
+        {
+          "type": "mrn",
+          "original_value": "MRN-66666",
+          "start": 67,
+          "end": 76
+        },
+        {
+          "type": "phone",
+          "original_value": "9765432109",
+          "start": 85,
+          "end": 95
+        },
+        {
+          "type": "email",
+          "original_value": "kavya.menon@skin.in",
+          "start": 103,
+          "end": 122
+        },
+        {
+          "type": "aadhaar",
+          "original_value": "1122 3344 5566",
+          "start": 133,
+          "end": 147
+        },
+        {
+          "type": "insurance",
+          "original_value": "INS-123456-J",
+          "start": 156,
+          "end": 168
+        },
+        {
+          "type": "license",
+          "original_value": "KL-2022-77777",
+          "start": 178,
+          "end": 191
+        },
+        {
+          "type": "pin",
+          "original_value": "682020",
+          "start": 223,
+          "end": 229
+        }
+      ],
+      "redacted_text": "Patient Kavya Menon, DOB: [DATE_REDACTED], first visited on [DATE_REDACTED]. [MRN_REDACTED]. Phone: [PHONE_REDACTED], email [EMAIL_REDACTED]. Aadhaar: [AADHAAR_REDACTED]. Policy [INSURANCE_REDACTED]. License [LICENSE_REDACTED]. Address: 88 Green Park, Kochi [PIN_REDACTED]. Patient family history is positive for Alzheimer's, but patient currently shows no symptoms."
+    },
+    "NOTE_011": {
+      "total_phi_found": 8,
+      "redaction_summary": {
+        "date": 1,
+        "mrn": 1,
+        "insurance": 1,
+        "phone": 1,
+        "email": 1,
+        "ssn": 1,
+        "license": 1,
+        "zip": 1
+      },
+      "medical_term_violations": [],
+      "findings": [
+        {
+          "type": "date",
+          "original_value": "07/21/1982",
+          "start": 27,
+          "end": 37
+        },
+        {
+          "type": "mrn",
+          "original_value": "MRN-77721",
+          "start": 39,
+          "end": 48
+        },
+        {
+          "type": "insurance",
+          "original_value": "INS-234567-K",
+          "start": 58,
+          "end": 70
+        },
+        {
+          "type": "phone",
+          "original_value": "718-555-6620",
+          "start": 81,
+          "end": 93
+        },
+        {
+          "type": "email",
+          "original_value": "jacob.miller@east.org",
+          "start": 101,
+          "end": 122
+        },
+        {
+          "type": "ssn",
+          "original_value": "314-55-9002",
+          "start": 129,
+          "end": 140
+        },
+        {
+          "type": "license",
+          "original_value": "NY-2021-88888",
+          "start": 150,
+          "end": 163
+        },
+        {
+          "type": "zip",
+          "original_value": "10065",
+          "start": 202,
+          "end": 207
+        }
+      ],
+      "redacted_text": "Patient Jacob Miller, DOB: [DATE_REDACTED], [MRN_REDACTED], policy: [INSURANCE_REDACTED]. Contact: [PHONE_REDACTED], email [EMAIL_REDACTED]. SSN: [SSN_REDACTED]. License [LICENSE_REDACTED]. Address: 410 E 62nd St, New York, NY [ZIP_REDACTED]."
+    },
+    "NOTE_012": {
+      "total_phi_found": 9,
+      "redaction_summary": {
+        "date": 2,
+        "mrn": 1,
+        "insurance": 1,
+        "phone": 1,
+        "email": 1,
+        "aadhaar": 1,
+        "license": 1,
+        "pin": 1
+      },
+      "medical_term_violations": [],
+      "findings": [
+        {
+          "type": "date",
+          "original_value": "09/06/2026",
+          "start": 25,
+          "end": 35
+        },
+        {
+          "type": "date",
+          "original_value": "14/08/1995",
+          "start": 47,
+          "end": 57
+        },
+        {
+          "type": "mrn",
+          "original_value": "MRN-24567",
+          "start": 59,
+          "end": 68
+        },
+        {
+          "type": "insurance",
+          "original_value": "INS-345678-L",
+          "start": 77,
+          "end": 89
+        },
+        {
+          "type": "phone",
+          "original_value": "+91 90123 45678",
+          "start": 100,
+          "end": 115
+        },
+        {
+          "type": "email",
+          "original_value": "isha.gupta@care.in",
+          "start": 123,
+          "end": 141
+        },
+        {
+          "type": "aadhaar",
+          "original_value": "7788 9900 1122",
+          "start": 152,
+          "end": 166
+        },
+        {
+          "type": "license",
+          "original_value": "UP-2025-99999",
+          "start": 176,
+          "end": 189
+        },
+        {
+          "type": "pin",
+          "original_value": "226001",
+          "start": 224,
+          "end": 230
+        }
+      ],
+      "redacted_text": "Patient Isha Gupta, DOB: [DATE_REDACTED], birthdate [DATE_REDACTED]. [MRN_REDACTED], policy [INSURANCE_REDACTED]. Contact: [PHONE_REDACTED], email [EMAIL_REDACTED]. Aadhaar: [AADHAAR_REDACTED]. License [LICENSE_REDACTED]. Address: 17 Civil Lines, Lucknow [PIN_REDACTED]."
+    },
+    "NOTE_013": {
+      "total_phi_found": 10,
+      "redaction_summary": {
+        "date": 2,
+        "mrn": 1,
+        "insurance": 1,
+        "phone": 2,
+        "email": 1,
+        "aadhaar": 1,
+        "license": 1,
+        "pin": 1
+      },
+      "medical_term_violations": [],
+      "findings": [
+        {
+          "type": "date",
+          "original_value": "1991-03-18",
+          "start": 28,
+          "end": 38
+        },
+        {
+          "type": "date",
+          "original_value": "18-03-2026",
+          "start": 51,
+          "end": 61
+        },
+        {
+          "type": "mrn",
+          "original_value": "MRN-34220",
+          "start": 63,
+          "end": 72
+        },
+        {
+          "type": "insurance",
+          "original_value": "INS-456789-M",
+          "start": 82,
+          "end": 94
+        },
+        {
+          "type": "phone",
+          "original_value": "8899011223",
+          "start": 103,
+          "end": 113
+        },
+        {
+          "type": "email",
+          "original_value": "harpreet.singh@spine.in",
+          "start": 122,
+          "end": 145
+        },
+        {
+          "type": "aadhaar",
+          "original_value": "6655 4433 2211",
+          "start": 156,
+          "end": 170
+        },
+        {
+          "type": "license",
+          "original_value": "CH-2020-00111",
+          "start": 181,
+          "end": 194
+        },
+        {
+          "type": "pin",
+          "original_value": "160017",
+          "start": 230,
+          "end": 236
+        },
+        {
+          "type": "phone",
+          "original_value": "8899011223",
+          "start": 310,
+          "end": 320
+        }
+      ],
+      "redacted_text": "Patient Harpreet Singh, DOB [DATE_REDACTED], visited on [DATE_REDACTED]. [MRN_REDACTED]. Policy: [INSURANCE_REDACTED]. Phone: [PHONE_REDACTED]. Email: [EMAIL_REDACTED]. Aadhaar: [AADHAAR_REDACTED]. License: [LICENSE_REDACTED]. Address: 55 Sector 17, Chandigarh [PIN_REDACTED]. Later, Harpreet Singh requested a follow-up prescription sent to him at [PHONE_REDACTED]."
+    },
+    "NOTE_014": {
+      "total_phi_found": 9,
+      "redaction_summary": {
+        "date": 2,
+        "mrn": 1,
+        "phone": 1,
+        "email": 1,
+        "ssn": 1,
+        "insurance": 1,
+        "license": 1,
+        "zip": 1
+      },
+      "medical_term_violations": [],
+      "findings": [
+        {
+          "type": "date",
+          "original_value": "August 22 1983",
+          "start": 27,
+          "end": 41
+        },
+        {
+          "type": "date",
+          "original_value": "February 3 2026",
+          "start": 54,
+          "end": 69
+        },
+        {
+          "type": "mrn",
+          "original_value": "MRN-60991",
+          "start": 71,
+          "end": 80
+        },
+        {
+          "type": "phone",
+          "original_value": "(503) 555-1299",
+          "start": 89,
+          "end": 103
+        },
+        {
+          "type": "email",
+          "original_value": "m.clark@rainier.com",
+          "start": 112,
+          "end": 131
+        },
+        {
+          "type": "ssn",
+          "original_value": "808-33-4501",
+          "start": 138,
+          "end": 149
+        },
+        {
+          "type": "insurance",
+          "original_value": "INS-567890-N",
+          "start": 159,
+          "end": 171
+        },
+        {
+          "type": "license",
+          "original_value": "OR-2024-22222",
+          "start": 181,
+          "end": 194
+        },
+        {
+          "type": "zip",
+          "original_value": "97205",
+          "start": 231,
+          "end": 236
+        }
+      ],
+      "redacted_text": "Patient Matthew Clark, DOB [DATE_REDACTED], visited on [DATE_REDACTED]. [MRN_REDACTED]. Phone: [PHONE_REDACTED], email: [EMAIL_REDACTED]. SSN: [SSN_REDACTED]. Policy: [INSURANCE_REDACTED]. License [LICENSE_REDACTED]. Address: 62 Alder St, Portland, OR [ZIP_REDACTED]."
+    },
+    "NOTE_015": {
+      "total_phi_found": 11,
+      "redaction_summary": {
+        "date": 2,
+        "mrn": 1,
+        "phone": 1,
+        "email": 1,
+        "aadhaar": 1,
+        "insurance": 1,
+        "license": 1,
+        "pin": 1,
+        "ip": 1,
+        "url": 1
+      },
+      "medical_term_violations": [],
+      "findings": [
+        {
+          "type": "date",
+          "original_value": "1996-05-18",
+          "start": 23,
+          "end": 33
+        },
+        {
+          "type": "date",
+          "original_value": "13/07/2026",
+          "start": 70,
+          "end": 80
+        },
+        {
+          "type": "mrn",
+          "original_value": "MRN-80818",
+          "start": 82,
+          "end": 91
+        },
+        {
+          "type": "phone",
+          "original_value": "9345678901",
+          "start": 100,
+          "end": 110
+        },
+        {
+          "type": "email",
+          "original_value": "farah.ali@metro.in",
+          "start": 119,
+          "end": 137
+        },
+        {
+          "type": "aadhaar",
+          "original_value": "9900 7766 5544",
+          "start": 148,
+          "end": 162
+        },
+        {
+          "type": "insurance",
+          "original_value": "INS-678901-O",
+          "start": 172,
+          "end": 184
+        },
+        {
+          "type": "license",
+          "original_value": "MH-2025-11223",
+          "start": 195,
+          "end": 208
+        },
+        {
+          "type": "pin",
+          "original_value": "411001",
+          "start": 244,
+          "end": 250
+        },
+        {
+          "type": "ip",
+          "original_value": "192.168.10.150",
+          "start": 310,
+          "end": 324
+        },
+        {
+          "type": "url",
+          "original_value": "www.metrohospital.in/telehealth.",
+          "start": 349,
+          "end": 381
+        }
+      ],
+      "redacted_text": "Patient Farah Ali, DOB [DATE_REDACTED], connected for a virtual session on [DATE_REDACTED]. [MRN_REDACTED]. Phone: [PHONE_REDACTED]. Email: [EMAIL_REDACTED]. Aadhaar: [AADHAAR_REDACTED]. Policy: [INSURANCE_REDACTED]. License: [LICENSE_REDACTED]. Address: 101 Palm Residency, Pune [PIN_REDACTED]. Session connection established via doctor workstation IP: [IP_REDACTED] using telehealth portal [URL_REDACTED]"
+    }
+  },
+  "stats": {
+    "total_notes": 15,
+    "total_phi_items": 138,
+    "most_common_type": "date",
+    "most_common_occurrences": 27,
+    "average_phi_per_note": 9.2,
+    "notes_with_zero_phi": 0
+  }
+}
