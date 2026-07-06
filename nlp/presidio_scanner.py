@@ -15,6 +15,7 @@ import time
 import logging
 from typing import TypedDict
 from presidio_analyzer import AnalyzerEngine, Pattern, PatternRecognizer
+from presidio_analyzer.nlp_engine import NlpEngineProvider
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities import OperatorConfig
 
@@ -67,16 +68,18 @@ def is_false_positive(word: str, entity_type: str) -> bool:
     """
     Checks if a detected word is a false positive based on clinical context and clean name rules.
     """
+    if entity_type not in ("PERSON", "ORGANIZATION", "LOCATION"):
+        return False
+        
     word_clean = word.strip().lower()
     
     # Strip common non-alphanumeric punctuation from borders (e.g. "SSN:" -> "ssn")
     word_alphanumeric = PUNCT_STRIP_RE.sub('', word_clean)
     
     # Rule 1: Exclude common clinical headers/meta-terms from PERSON, ORGANIZATION, and LOCATION
-    if entity_type in ("PERSON", "ORGANIZATION", "LOCATION"):
-        if word_alphanumeric in HEADERS_TO_EXCLUDE or word_clean in HEADERS_TO_EXCLUDE:
-            return True
-            
+    if word_alphanumeric in HEADERS_TO_EXCLUDE or word_clean in HEADERS_TO_EXCLUDE:
+        return True
+        
     # Rule 2: Specific validation for PERSON names
     if entity_type == "PERSON":
         # Person names should not contain numbers or clinical symbols
@@ -96,12 +99,12 @@ def is_false_positive(word: str, entity_type: str) -> bool:
 # NLP Redaction Engine Class
 # ---------------------------------------------------------------------------
 
+logger = logging.getLogger(__name__)
+
 class PresidioScanner:
     def __init__(self):
         # Configure Presidio to use the small, fast en_core_web_sm model
         # instead of trying to download the large en_core_web_lg model.
-        from presidio_analyzer.nlp_engine import NlpEngineProvider
-        
         configuration = {
             "nlp_engine_name": "spacy",
             "models": [{"model_name": "en_core_web_sm", "lang_code": "en"}],
@@ -113,31 +116,34 @@ class PresidioScanner:
         self.analyzer = AnalyzerEngine(nlp_engine=nlp_engine)
         self.anonymizer = AnonymizerEngine()
 
-        # Add custom recognizer for Insurance IDs
-        insurance_pattern = Pattern(
-            name="insurance_id_pattern",
-            regex=r"\bINS-\d+-[A-Za-z0-9]+\b",
-            score=0.95
-        )
-        insurance_recognizer = PatternRecognizer(
-            supported_entity="INSURANCE_ID",
-            patterns=[insurance_pattern],
-            context=["insurance", "policy", "plan", "subscriber"]
-        )
-        self.analyzer.registry.add_recognizer(insurance_recognizer)
+        # Define and register custom pattern recognizers dynamically
+        custom_recognizers = [
+            {
+                "entity": "INSURANCE_ID",
+                "pattern_name": "insurance_id_pattern",
+                "regex": r"\bINS-\d+-[A-Za-z0-9]+\b",
+                "context": ["insurance", "policy", "plan", "subscriber"]
+            },
+            {
+                "entity": "LICENSE_NUMBER",
+                "pattern_name": "license_number_pattern",
+                "regex": r"\b[A-Za-z]{2,3}-\d{4}-\d{3,8}\b",
+                "context": ["license", "licence", "registration", "cert", "doctor", "physician"]
+            }
+        ]
 
-        # Add custom recognizer for Professional/Medical/State License numbers
-        license_pattern = Pattern(
-            name="license_number_pattern",
-            regex=r"\b[A-Za-z]{2,3}-\d{4}-\d{3,8}\b",
-            score=0.95
-        )
-        license_recognizer = PatternRecognizer(
-            supported_entity="LICENSE_NUMBER",
-            patterns=[license_pattern],
-            context=["license", "licence", "registration", "cert", "doctor", "physician"]
-        )
-        self.analyzer.registry.add_recognizer(license_recognizer)
+        for config in custom_recognizers:
+            pattern = Pattern(
+                name=config["pattern_name"],
+                regex=config["regex"],
+                score=0.95
+            )
+            recognizer = PatternRecognizer(
+                supported_entity=config["entity"],
+                patterns=[pattern],
+                context=config["context"]
+            )
+            self.analyzer.registry.add_recognizer(recognizer)
         
         # Mapping Presidio entities to our standard label formats
         self.redaction_labels = {
@@ -181,8 +187,7 @@ class PresidioScanner:
         # Filter analyzer results to only include those we explicitly support and are not false positives
         analyzer_results = [
             r for r in raw_results 
-            if r.entity_type in self.redaction_labels
-            and not is_false_positive(text[r.start:r.end], r.entity_type)
+            if not is_false_positive(text[r.start:r.end], r.entity_type)
         ]
         
         # 2. Extract findings matching the standard structure
@@ -210,7 +215,6 @@ class PresidioScanner:
         )
         
         duration_ms = (time.perf_counter() - start_time) * 1000
-        logger = logging.getLogger(__name__)
         logger.info(f"NLP Presidio scan completed in {duration_ms:.2f} ms")
         
         return {

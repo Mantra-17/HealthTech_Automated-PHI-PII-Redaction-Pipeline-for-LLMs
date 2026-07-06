@@ -7,6 +7,9 @@ class PersonFinding(TypedDict):
     start: int
     end: int
 
+# Cache loaded spaCy models to avoid reloading overhead
+_SPACY_MODELS: dict[str, spacy.language.Language] = {}
+
 def detect_persons(text: str, model_name: str = "en_core_web_sm") -> list[PersonFinding]:
     """
     Load a spaCy model and detect all PERSON entities in the provided text.
@@ -18,8 +21,9 @@ def detect_persons(text: str, model_name: str = "en_core_web_sm") -> list[Person
     Returns:
         A list of dictionaries containing the detected PERSON name and its offsets.
     """
-    # Load model (spaCy caches loaded models, but loading once per run is standard)
-    nlp = spacy.load(model_name)
+    if model_name not in _SPACY_MODELS:
+        _SPACY_MODELS[model_name] = spacy.load(model_name)
+    nlp = _SPACY_MODELS[model_name]
     doc = nlp(text)
     
     findings: list[PersonFinding] = []

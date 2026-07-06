@@ -88,9 +88,9 @@ class NLPEvaluator:
             A tuple of (matched_pairs, unmatched_gt, unmatched_pred)
             where matched_pairs is a list of (gt, pred, score) tuples.
         """
-        # Ensure input structures are valid
-        gt_list = [dict(g) for g in ground_truth]
-        pred_list = [dict(p) for p in predictions]
+        # Avoid unnecessary copying of dictionaries to optimize memory/speed
+        gt_list = ground_truth
+        pred_list = predictions
 
         # Precompute lowercase type representations to avoid O(M * N) conversions
         gt_types = [str(g.get("type", "")).lower() for g in gt_list]
@@ -187,16 +187,9 @@ class NLPEvaluator:
             ground_truth: Either a dict mapping doc_id -> list of entities, or a list of entities.
             predictions: Either a dict mapping doc_id -> list of entities, or a list of entities.
         """
-        # Standardize format to Dict[str, List[Entity]]
-        if isinstance(ground_truth, list):
-            gt_docs = {"default_doc": ground_truth}
-        else:
-            gt_docs = {k: list(v) for k, v in ground_truth.items()}
-
-        if isinstance(predictions, list):
-            pred_docs = {"default_doc": predictions}
-        else:
-            pred_docs = {k: list(v) for k, v in predictions.items()}
+        # Standardize format to Dict[str, List[Entity]] without redundant copying
+        gt_docs = {"default_doc": ground_truth} if isinstance(ground_truth, list) else ground_truth
+        pred_docs = {"default_doc": predictions} if isinstance(predictions, list) else predictions
 
         # Align keys
         all_doc_ids = set(gt_docs.keys()).union(pred_docs.keys())
