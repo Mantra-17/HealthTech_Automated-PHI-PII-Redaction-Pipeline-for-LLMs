@@ -2,6 +2,7 @@
  * ui.js — Encapsulates UI rendering, highlighting, and logging
  */
 
+
 class UI {
   static get CATEGORY_LABELS() {
     return {
