@@ -161,7 +161,22 @@ class NLPEvaluator:
         return matched_pairs, unmatched_gt, unmatched_pred
 
     def compute_metrics(self, tp: int, fp: int, fn: int) -> MetricResult:
-        """Computes Precision, Recall, and F1 metrics from counts."""
+        """
+        Computes Precision, Recall, and F1 metrics from counts.
+
+        Calculation Steps & Clinical Context:
+        1. Precision (Positive Predictive Value):
+           Formula: tp / (tp + fp)
+           - Measures the proportion of scanner redactions that are actual PHI.
+           - Crucial to prevent over-redaction and context loss in external LLM calls.
+        2. Recall (Sensitivity / True Positive Rate):
+           Formula: tp / (tp + fn)
+           - Measures the proportion of actual PHI that was successfully caught.
+           - Crucial for strict HIPAA compliance to prevent leaks of patient details.
+        3. F1-Score:
+           Formula: 2 * precision * recall / (precision + recall)
+           - Harmonic mean of precision and recall to assess overall balance.
+        """
         precision = tp / (tp + fp) if (tp + fp) > 0 else 1.0
         recall = tp / (tp + fn) if (tp + fn) > 0 else 1.0
         f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0

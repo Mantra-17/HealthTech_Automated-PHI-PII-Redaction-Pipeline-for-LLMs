@@ -7,7 +7,6 @@ Provides endpoints to run custom evaluations and pre-compiled clinical note eval
 
 from __future__ import annotations
 
-import os
 import re
 import sys
 from pathlib import Path
@@ -285,21 +284,21 @@ def get_sample_notes_evaluation():
             
             # Map NLP findings keys to match evaluator expectations
             nlp_findings = []
-            for f in nlp_res.get("findings", []):
+            for finding in nlp_res.get("findings", []):
                 nlp_findings.append({
-                    "start": f["start"],
-                    "end": f["end"],
-                    "type": f["type"],
-                    "text": f["original_value"]
+                    "start": finding["start"],
+                    "end": finding["end"],
+                    "type": finding["type"],
+                    "text": finding["original_value"]
                 })
 
             regex_findings = []
-            for f in regex_res.get("findings", []):
+            for finding in regex_res.get("findings", []):
                 regex_findings.append({
-                    "start": f["start"],
-                    "end": f["end"],
-                    "type": f["type"],
-                    "text": f["text"]
+                    "start": finding["start"],
+                    "end": finding["end"],
+                    "type": finding["type"],
+                    "text": finding["text"]
                 })
 
             combined = regex_findings + nlp_findings
