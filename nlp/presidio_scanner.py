@@ -67,6 +67,12 @@ EPONYMS_RE = re.compile(r'|'.join(EPONYMS))
 def is_false_positive(word: str, entity_type: str) -> bool:
     """
     Checks if a detected word is a false positive based on clinical context and clean name rules.
+
+    False Positive Filtering Logic:
+    1. Clinical Headers: Excludes terms like "dob", "mrn", "patient", "doctor" from name/location categories.
+    2. Character Validation: Rejects PERSON entities containing digits or symbols (e.g., '@', '/', '#').
+    3. Eponym Filtering: Filters out disease names named after people (e.g., "Parkinson") to keep them unredacted.
+    4. Length Check: Discards single-character names as noise.
     """
     if entity_type not in ("PERSON", "ORGANIZATION", "LOCATION"):
         return False
@@ -80,7 +86,7 @@ def is_false_positive(word: str, entity_type: str) -> bool:
     if word_alphanumeric in HEADERS_TO_EXCLUDE or word_clean in HEADERS_TO_EXCLUDE:
         return True
         
-    # Rule 2: Specific validation for PERSON names
+    # Rule 2: Specific validation for PERSON names (checking characters, eponyms, and length)
     if entity_type == "PERSON":
         # Person names should not contain numbers or clinical symbols
         if PERSON_INVALID_CHARS_RE.search(word):
@@ -174,6 +180,13 @@ class PresidioScanner:
     def scan_and_redact(self, text: str) -> ScanResult:
         """
         Scan text for PII/PHI using Presidio (with spaCy NER) and redact it.
+
+        NER Entity Processing Flow:
+        1. Context-Aware Scan: Uses spaCy's NLP models within the Presidio AnalyzerEngine.
+        2. Strict Filtering: Passes candidates through 'is_false_positive' to drop clinical headers, 
+           common eponyms, and single-character names.
+        3. Normalization: Standardizes extraction findings into start, end, type, and original value.
+        4. Pseudonymization: Replaces identified entities with safe placeholders using pre-configured operators.
         """
         start_time = time.perf_counter()
         
@@ -207,7 +220,7 @@ class PresidioScanner:
             })
             summary[type_lower] = summary.get(type_lower, 0) + 1
 
-        # 3. Anonymize the text using the AnonymizerEngine using pre-configured operators
+        # 3. Anonymize the text with the AnonymizerEngine using pre-configured operators
         anonymized_result = self.anonymizer.anonymize(
             text=text,
             analyzer_results=analyzer_results,
