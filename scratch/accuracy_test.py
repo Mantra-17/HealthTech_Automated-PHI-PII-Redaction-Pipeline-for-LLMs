@@ -14,6 +14,14 @@ from nlp.presidio_scanner import PresidioScanner
 
 # resolve_all_overlaps from backend/routes/proxy.py
 def resolve_all_overlaps(findings):
+    """
+    Resolve overlapping findings from regex and NLP scanners.
+    
+    Priority resolution strategy:
+    1. Earlier start position first.
+    2. Longer spans first (tie-breaker).
+    3. Type-specific priority weights (e.g., URL > Email > IP > Aadhaar > SSN > ...).
+    """
     if not findings:
         return []
 
@@ -227,6 +235,12 @@ GROUND_TRUTH_16_20 = {
 }
 
 def overlaps(a, b):
+    """
+    Check if two spans/intervals overlap.
+    
+    Edge Case: Spans that share a boundary (e.g. a['end'] == b['start'])
+    are considered adjacent and do NOT overlap.
+    """
     return a["start"] < b["end"] and b["start"] < a["end"]
 
 def to_canonical(t):

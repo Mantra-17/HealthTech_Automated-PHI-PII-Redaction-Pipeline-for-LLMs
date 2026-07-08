@@ -7,28 +7,31 @@ from __future__ import annotations
 import pytest
 from nlp.evaluator import NLPEvaluator, Entity
 
+# Repeated test value organized into a constant for maintainability
+JOHN_SMITH_ENTITY = {"start": 0, "end": 10, "type": "PERSON", "text": "John Smith"}
+
 
 def test_exact_match_basic():
     evaluator = NLPEvaluator(mode="exact", strict_type=True)
-    gt = [{"start": 0, "end": 10, "type": "PERSON", "text": "John Smith"}]
-    pred = [{"start": 0, "end": 10, "type": "PERSON", "text": "John Smith"}]
+    gt = [JOHN_SMITH_ENTITY]
+    pred = [JOHN_SMITH_ENTITY]
     
     report = evaluator.evaluate(gt, pred)
     gm = report["global_metrics"]
     
-    assert gm["tp"] == 1
-    assert gm["fp"] == 0
-    assert gm["fn"] == 0
-    assert gm["precision"] == 1.0
-    assert gm["recall"] == 1.0
-    assert gm["f1"] == 1.0
-    assert gm["support"] == 1
+    assert gm["tp"] == 1, f"Expected 1 True Positive, got {gm['tp']}"
+    assert gm["fp"] == 0, f"Expected 0 False Positives, got {gm['fp']}"
+    assert gm["fn"] == 0, f"Expected 0 False Negatives, got {gm['fn']}"
+    assert gm["precision"] == 1.0, f"Expected precision 1.0, got {gm['precision']}"
+    assert gm["recall"] == 1.0, f"Expected recall 1.0, got {gm['recall']}"
+    assert gm["f1"] == 1.0, f"Expected F1 1.0, got {gm['f1']}"
+    assert gm["support"] == 1, f"Expected support 1, got {gm['support']}"
 
 
 def test_exact_match_type_strictness():
     # When strict_type is True, type mismatch should prevent match
     evaluator = NLPEvaluator(mode="exact", strict_type=True)
-    gt = [{"start": 0, "end": 10, "type": "PERSON", "text": "John Smith"}]
+    gt = [JOHN_SMITH_ENTITY]
     pred = [{"start": 0, "end": 10, "type": "DATE", "text": "John Smith"}]
     
     report = evaluator.evaluate(gt, pred)
