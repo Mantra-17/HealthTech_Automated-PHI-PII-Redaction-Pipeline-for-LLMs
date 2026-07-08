@@ -6,20 +6,22 @@ def scanner():
     return PresidioScanner()
 
 def test_scanner_structure(scanner):
+    """Verify that the scanner returns all expected schema keys with correct types."""
     text = "Patient John Smith was admitted on 05/06/2026."
     result = scanner.scan_and_redact(text)
     
     # Assert result structure is correct
-    assert "redacted_text" in result
-    assert "findings" in result
-    assert "total_phi_found" in result
-    assert "redaction_summary" in result
+    assert "redacted_text" in result, "Missing 'redacted_text' in scanner output"
+    assert "findings" in result, "Missing 'findings' in scanner output"
+    assert "total_phi_found" in result, "Missing 'total_phi_found' in scanner output"
+    assert "redaction_summary" in result, "Missing 'redaction_summary' in scanner output"
     
     assert isinstance(result["findings"], list)
     assert isinstance(result["total_phi_found"], int)
     assert isinstance(result["redaction_summary"], dict)
 
 def test_person_redaction(scanner):
+    """Verify that the scanner identifies and redacts person names."""
     text = "Dr. Emily Carter treated the patient."
     result = scanner.scan_and_redact(text)
     
