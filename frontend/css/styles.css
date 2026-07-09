@@ -63,6 +63,7 @@
   padding: 0 4px;
 }
 
+
 .output-box .pseudo {
   background-color: #e1f5ee; /* teal-50 equivalent */
   color: #085041; /* teal-800 equivalent */
@@ -382,6 +383,7 @@
   flex-direction: column;
   gap: 1rem;
 }
+
 
 .note-detail-header {
   display: flex;

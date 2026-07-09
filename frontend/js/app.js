@@ -131,6 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   }, 50);
+  
 });
 
 // Logout Handler

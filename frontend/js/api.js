@@ -11,6 +11,7 @@ class API {
     return `${window.location.origin}/api`;
   }
 
+  
   static async redact(text) {
     const response = await fetch(`${this.BASE_URL}/redact`, {
       method: "POST",
