@@ -1,17 +1,10 @@
 #!/usr/bin/env python3
 """
-Batch-scan all notes in ``sample_notes.txt`` and print a redaction report.
+batch_scan.py
+CLI tool that batch-processes sample_notes.txt to detect and redact PHI/PII.
 
 This tool acts as a CLI client to verify and benchmark rules-based PHI/PII redaction
 across synthetic clinical note corpora, checking HIPAA Safe Harbor alignment.
-
-Usage:
-    python regex_pipeline/batch_scan.py
-    python regex_pipeline/batch_scan.py --verbose
-    python regex_pipeline/batch_scan.py --detect-only
-    python regex_pipeline/batch_scan.py --stats
-    python regex_pipeline/batch_scan.py --note NOTE_007
-    python regex_pipeline/batch_scan.py --output results.json
 """
 
 from __future__ import annotations
@@ -21,7 +14,7 @@ import json
 import sys
 from pathlib import Path
 
-# Allow running as ``python regex/batch_scan.py`` from project root.
+# Allow running from project root
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
@@ -78,8 +71,8 @@ def run_batch(
     # Filter notes dictionary by a specific note ID if requested
     if note_id_filter:
         if note_id_filter not in notes:
-            print(f"Error: Note ID '{note_id_filter}' not found in {notes_path}", file=sys.stderr)
-            return 1
+            print(f"Error: Note ID '{note_id_filter}' not found.", file=sys.stderr)
+            sys.exit(1)
         notes = {note_id_filter: notes[note_id_filter]}
 
     issues = 0
@@ -87,10 +80,13 @@ def run_batch(
     batch_results = []
     note_results = {}
     printed_lines: list[str] = []
+    redaction_mappings: dict[str, str] = {}
 
     def log(msg: str = "") -> None:
         print(msg)
         printed_lines.append(msg)
+
+    label_order = list(REDACTION_LABELS.keys())
 
     for note_id, body in sorted(notes.items()):
         result = scan_and_redact(body)
@@ -107,11 +103,23 @@ def run_batch(
         }
         batch_results.append(result)
 
+        # Collect unique redaction mappings for later print
+        for finding in result["findings"]:
+            orig = finding["original_value"]
+            label = REDACTION_LABELS.get(
+                finding["type"], f"[{finding['type'].upper()}_REDACTED]"
+            )
+            redaction_mappings[orig] = label
+
         if not as_json:
             if detect_only:
-                summary_str = ", ".join(
-                    f"{k}:{v}" for k, v in sorted(result["redaction_summary"].items())
+                # Format exactly as requested: NOTE_001: would redact 7 items [phone:2, date:2, email:1, ssn:1, mrn:1]
+                # Sorted by count descending, then by original label order
+                sorted_summary = sorted(
+                    [(k, v) for k, v in result["redaction_summary"].items() if v > 0],
+                    key=lambda x: (-x[1], label_order.index(x[0]))
                 )
+                summary_str = ", ".join(f"{k}:{v}" for k, v in sorted_summary)
                 log(f"{note_id}: would redact {result['total_phi_found']} items [{summary_str}]")
             else:
                 summary_str = ", ".join(
@@ -124,14 +132,6 @@ def run_batch(
                     log(f"  ORIGINAL:  {body[:120]}{'...' if len(body) > 120 else ''}")
                     log(f"  REDACTED:  {result['redacted_text'][:120]}{'...' if len(result['redacted_text']) > 120 else ''}")
                     log()
-
-            if redaction_labels:
-                for finding in result["findings"]:
-                    orig = finding["original_value"]
-                    label = REDACTION_LABELS.get(
-                        finding["type"], f"[{finding['type'].upper()}_REDACTED]"
-                    )
-                    log(f'  "{orig}" → "{label}"')
 
     # Output aggregate metrics if requested
     if stats and not as_json:
@@ -146,23 +146,28 @@ def run_batch(
         if cat_totals:
             most_common_type = max(cat_totals, key=cat_totals.get)
             most_common_count = cat_totals[most_common_type]
-            most_common_str = f"{most_common_type} ({most_common_count} occurrences)"
+            most_common_str = f"{most_common_type} ({most_common_count})"
         else:
-            most_common_str = "None (0 occurrences)"
+            most_common_str = "None (0)"
 
         avg_phi = total_phi / total_notes if total_notes > 0 else 0.0
         zero_phi_notes = sum(1 for r in batch_results if r["total_phi_found"] == 0)
 
-        log()
-        log("========================================")
+        log("==============================")
         log("AGGREGATE STATISTICS")
-        log("========================================")
-        log(f"Total notes: {total_notes}")
-        log(f"Total PHI items: {total_phi}")
-        log(f"Most common type: {most_common_str}")
+        log("==============================")
+        log(f"Total notes scanned: {total_notes}")
+        log(f"Total PHI items found: {total_phi}")
+        log(f"Most common PHI type: {most_common_str}")
         log(f"Average PHI per note: {avg_phi:.1f}")
         log(f"Notes with zero PHI: {zero_phi_notes}")
-        log("========================================")
+        log("==============================")
+
+    # Show unique redaction mapping if requested
+    if redaction_labels and not as_json:
+        log("REDACTION MAPPING:")
+        for orig, label in sorted(redaction_mappings.items()):
+            log(f'"{orig}" → {label}')
 
     # Standard JSON report building
     for note_id, entry_data in note_results.items():
@@ -176,47 +181,15 @@ def run_batch(
         json_output = json.dumps(report, indent=2)
         print(json_output)
         printed_lines.append(json_output)
-    else:
-        log("-" * 60)
-        log(f"Scanned {len(notes)} notes. Issues: {issues}")
 
     # Handle output file persistence
     if output_path:
         ext = output_path.suffix.lower()
         if ext == ".json":
-            output_data = {
-                "total_notes": len(notes),
-                "issues": issues,
-                "notes": {},
-            }
-            if stats:
-                cat_totals = {}
-                for r in batch_results:
-                    for cat, count in r["redaction_summary"].items():
-                        cat_totals[cat] = cat_totals.get(cat, 0) + count
-                most_common_type = max(cat_totals, key=cat_totals.get) if cat_totals else None
-                most_common_count = cat_totals[most_common_type] if cat_totals else 0
-                avg_phi = sum(r["total_phi_found"] for r in batch_results) / len(notes) if notes else 0.0
-                zero_phi_notes = sum(1 for r in batch_results if r["total_phi_found"] == 0)
-                output_data["stats"] = {
-                    "total_notes": len(notes),
-                    "total_phi_items": sum(r["total_phi_found"] for r in batch_results),
-                    "most_common_type": most_common_type,
-                    "most_common_occurrences": most_common_count,
-                    "average_phi_per_note": round(avg_phi, 1),
-                    "notes_with_zero_phi": zero_phi_notes,
-                }
-            for note_id, res in note_results.items():
-                output_data["notes"][note_id] = {
-                    "total_phi_found": res["total_phi_found"],
-                    "redaction_summary": res["redaction_summary"],
-                    "medical_term_violations": res["medical_term_violations"],
-                    "findings": res["findings"],
-                    "redacted_text": res["redacted_text"],
-                }
-            output_path.write_text(json.dumps(output_data, indent=2), encoding="utf-8")
+            output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
         else:
             output_path.write_text("\n".join(printed_lines), encoding="utf-8")
+        print(f"Results saved to {output_path.name}")
 
     return issues
 

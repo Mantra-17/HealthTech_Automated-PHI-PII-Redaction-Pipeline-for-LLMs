@@ -1,44 +1,147 @@
 NOTE_001:
-Patient Rahul Sharma, DOB: 14/02/1985, MRN-12345, holds insurance ID INS-111111-A. Contact: +91-98765-43210, email rahul.sharma@gmail.com. Aadhaar card number: 1234 5678 9012. Driver's license MH-2024-7890. Address: 42 MG Road, Mumbai 400001.
+Patient: Rahul Sharma
+DOB: 11/12/1984
+MRN: MRN-55412
+Address: 1428 Elm St, Los Angeles, CA 90001
+Contact: 213-555-0143
+Email: rahul.sharma@cyberdyne.org
+Insurance ID: INS-908124-A
+Diagnosis: Chronic anxiety. Discussed coping strategies. Scheduled for follow-up on 07/15/2026.
 
 NOTE_002:
-Patient Sarah Johnson, DOB June 14 1989, visited on June 14 2026. MRN-54321. Phone: (312) 555-7812, email: sarah.j@outlook.com. SSN: 123-45-6789. Insurance plan: INS-222222-B. License CA-2025-98765. Address: 1187 Pine St, Chicago, IL 60614.
+Patient: Rajesh Patel
+DOB: 15-08-1977
+Aadhaar Number: 4567 8901 2345
+Address: Flat 302, Sai Enclave, Andheri West, Mumbai, 400053
+Phone: +91-98765-43210
+Email: rajesh.patel@apollo.in
+MRN: MRN-10293
+Diagnosis: Type 2 Diabetes Mellitus. Patient advised diet changes. Next visit set for 2026-10-12.
 
 NOTE_003:
-Patient Vikram Iyer, DOB: 1980-05-12, presented on 2026-07-15. MRN-99999. Contact: 9123456789, email: vikram.iyer@health.in. Aadhaar: 987654321234. Insurance reference: INS-333333-C. Medical license: KA-2023-54321. Address: 9 Lake Road, Bengaluru 560034.
+Patient: Michael Myers
+DOB: October 19 1957
+SSN: 333-44-5555
+Address: 45 Lampkin Ln, Haddonfield, IL 61856
+Phone: (217) 555-0199
+Driver License: IL-2023-90812
+Insurance ID: INS-554321-B
+The patient presented for dressing change on his right hand. He was cooperative and showed good wound healing. Follow-up is scheduled for 10-25-2026.
 
 NOTE_004:
-Patient Emily Turner, DOB: 09/12/1992, visited on 03/19/2026. MRN-22222. Phone: 646-555-3819, email: emily.turner@hospital.com. SSN: 987-12-3456. Insurance: INS-444444-D. Driver license: NY-2022-11111. Address: 75 Brook Lane, New York, NY 10011.
+Patient: Ananya Rao
+DOB: 05/12/1990
+MRN: MRN-88712
+Address: 24 Temple Road, Malleshwaram, Bangalore, 560003
+Phone: 9123456789
+Email: ananya.rao@care.in
+License: KA-2024-88712
+The patient complains of persistent dry cough. Advised warm water gurgling and medication. Return visit in two weeks.
 
 NOTE_005:
-Patient Abdul Khan, DOB 1978-08-22, evaluated on 2026-06-02. MRN-33333. Phone: +91-99887-66554, email: abdul.khan@care.in. Aadhaar: 456712348890. Insurance: INS-555555-E. License RJ-2021-2222. Address: 12 Residency Rd, Jaipur 302001. Connected from triage IP: 10.14.22.9, portal URL: www.citycare.in/portal.
+Patient: Bruce Wayne
+DOB: 02/19/1972
+SSN: 111-22-3333
+Address: 1007 Mountain Drive, Gotham City, NJ 07001
+Phone: 201-555-0100
+Email: bwayne@wayneenterprises.com
+MRN: MRN-00700
+Chief complaint: Bruising on ribs and shoulder strain. Reminded patient to avoid high-impact activities. Next checkup on 2026-08-01.
 
 NOTE_006:
-Patient Laura Mitchell, DOB October 10 1975, presented on April 16 2026. MRN-44444. Phone: (415) 555-2840, email: l.mitchell@bay.net. SSN: 533-18-6245. Insurance policy INS-666666-F. License CA-2026-33333. Zip code: 94107. Access from workstation IP: 172.16.44.101.
+Patient: Priya Nair
+DOB: 23-11-1985
+Aadhaar: 987654321098
+Address: 14 MG Road, Ernakulam, Kochi, 682011
+Phone: +91 99887 76655
+Email: priya.nair@health.in
+MRN: MRN-44512
+Diagnosis: Iron deficiency anemia. Prescribed iron supplements. Scheduled for follow-up blood work on 12/15/2026.
 
 NOTE_007:
-Patient John Parkinson, DOB: 1965-03-12, presented on 2026-05-10. MRN-55555. Phone: 206-555-0144, email: john.parkinson@clinic.org. SSN: 667-24-8931. Policy: INS-777777-G. License WA-2025-44444. Zip code: 98101. Chief complaint: resting tremor and rigidity. Clinical findings are highly suggestive of progressive Parkinson's disease. Referred to neurology.
+Patient: John Parkinson
+DOB: 04/12/1956
+SSN: 999-12-3456
+Address: 123 Pine St, Seattle, WA 98101
+Phone: 206-555-0199
+Email: john.parkinson@gmail.com
+MRN: MRN-88762
+Chief complaint: resting tremor and progressive muscle rigidity. Neurological assessment is highly suggestive of Parkinson's disease. Scheduled for follow-up in three months.
 
 NOTE_008:
-Patient Neha Desai, DOB: 11/01/1993, MRN-77777, policy: INS-888888-H. Contact: +91 98765 12345, email neha.desai@apollo.com. Aadhaar: 2345 6789 1201. License GJ-2024-55555. Address: 4 Riverfront Apts, Ahmedabad 380009.
+Patient: Amit Sen
+DOB: 30/09/1982
+Aadhaar: 1122 3344 5566
+Address: 5 Broad Street, Ballygunge, Kolkata, 700019
+Phone: 9830012345
+Email: amit.sen@fortis.co.in
+License: WB-2025-99881
+The patient visited for blood pressure monitoring. BP is stable at 120/80. Continue current medications. Next review on 09-15-2026.
 
 NOTE_009:
-Patient Robert Hayes, DOB May 05 1970, visited on June 05 2026. MRN-91111. Phone: (202) 555-2711, email: robert.hayes@metro.us. SSN: 111-22-3333. Policy number: INS-999999-I. License DC-2023-66666. Zip: 20009.
+Patient: David Miller
+DOB: June 15 1978
+SSN: 777-66-5544
+Address: 789 Broadway, New York, NY 10003
+Phone: (212) 555-4321
+Email: david.miller@health.org
+Insurance ID: INS-887766-C
+Diagnosis: Gouty arthritis flare-up. Prescribed Colchicine. Advised dietary modifications. Checkup scheduled for 08/20/2026.
 
 NOTE_010:
-Patient Kavya Menon, DOB: 12-06-2026, first visited on 05/12/1988. MRN-66666. Phone: 9765432109, email kavya.menon@skin.in. Aadhaar: 1122 3344 5566. Policy INS-123456-J. License KL-2022-77777. Address: 88 Green Park, Kochi 682020. Patient family history is positive for Alzheimer's, but patient currently shows no symptoms.
+Patient: Alice Jones
+DOB: 08/23/1948
+SSN: 888-23-4567
+Address: 456 Elm St, Chicago, IL 60611
+Phone: (312) 555-7890
+Email: alice.jones@yahoo.com
+MRN: MRN-44512
+The patient exhibits significant short-term memory loss and confusion. Clinical findings suggest early-stage Alzheimer's disease. Discussed management options with her family.
 
 NOTE_011:
-Patient Jacob Miller, DOB: 07/21/1982, MRN-77721, policy: INS-234567-K. Contact: 718-555-6620, email jacob.miller@east.org. SSN: 314-55-9002. License NY-2021-88888. Address: 410 E 62nd St, New York, NY 10065.
+Patient Name: Robert Miller
+DOB: 12-06-1980
+MRN: MRN-11223
+Phone: 212-555-4321
+Address: 78 Broadway, New York, NY 10003
+We contacted Robert Miller at 212-555-4321 to discuss the recent lab reports. Robert Miller confirmed that 212-555-4321 remains the primary contact number. Advised follow-up.
 
 NOTE_012:
-Patient Isha Gupta, DOB: 09/06/2026, birthdate 14/08/1995. MRN-24567, policy INS-345678-L. Contact: +91 90123 45678, email isha.gupta@care.in. Aadhaar: 7788 9900 1122. License UP-2025-99999. Address: 17 Civil Lines, Lucknow 226001.
+Patient: Sunita Rao
+DOB: 24-05-1991
+Aadhaar: 5544 3322 1100
+Address: 9 Salt Lake Road, Sector 5, Kolkata, 700091
+Phone: +91-90070-12345
+Email: sunita.rao@desai.com
+Insurance: INS-665544-H
+Diagnosis: Mild asthma. Prescribed inhaler as needed. Scheduled follow-up for 08-14-2026.
 
 NOTE_013:
-Patient Harpreet Singh, DOB 1991-03-18, visited on 18-03-2026. MRN-34220. Policy: INS-456789-M. Phone: 8899011223. Email: harpreet.singh@spine.in. Aadhaar: 6655 4433 2211. License: CH-2020-00111. Address: 55 Sector 17, Chandigarh 160017. Later, Harpreet Singh requested a follow-up prescription sent to him at 8899011223.
+Patient: Mark Davis
+DOB: 1989-11-05
+MRN: MRN-90981
+Address: 900 Welch Rd, Palo Alto, CA 94304
+Phone: 650-555-6677
+Email: mark.davis@stanford.edu
+A telemedicine consultation was conducted with the patient. IP Address: 10.0.1.25. Portal URL: https://myhealth.stanford.edu/telehealth. Connection was stable.
 
 NOTE_014:
-Patient Matthew Clark, DOB August 22 1983, visited on February 3 2026. MRN-60991. Phone: (503) 555-1299, email: m.clark@rainier.com. SSN: 808-33-4501. Policy: INS-567890-N. License OR-2024-22222. Address: 62 Alder St, Portland, OR 97205.
+Patient: Vikram Malhotra
+DOB: 14/02/1987
+Aadhaar: 3344 5566 7788
+Address: 101 Park View, MG Road, Pune, 411001
+Phone: 9822012345
+Email: vikram.m@apollo.in
+Insurance: INS-778899-K
+Diagnosis: Hypertension. Prescribed Amlodipine. Next checkup scheduled for 09/30/2026.
 
 NOTE_015:
-Patient Farah Ali, DOB 1996-05-18, connected for a virtual session on 13/07/2026. MRN-80818. Phone: 9345678901. Email: farah.ali@metro.in. Aadhaar: 9900 7766 5544. Policy: INS-678901-O. License: MH-2025-11223. Address: 101 Palm Residency, Pune 411001. Session connection established via doctor workstation IP: 192.168.10.150 using telehealth portal www.metrohospital.in/telehealth.
+Patient: James Bond
+DOB: 11/11/1953
+SSN: 007-00-0007
+Address: 85 Albert Embankment, London, ZIP: 07030
+Phone: 202-555-0007
+Email: jbond@mi6.gov.uk
+Insurance ID: INS-007007-A
+License Number: MH-2024-78905
+The patient was seen for annual physical. Vital signs are stable. Advised regular exercise. Follow-up set for 11/11/2026.
