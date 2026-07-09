@@ -12,6 +12,8 @@ import uuid
 import logging
 from flask import Blueprint, request, jsonify
 from pathlib import Path
+from collections import defaultdict
+import time as _time
 
 # Add project root to sys.path to enable imports from sibling directories
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -22,10 +24,32 @@ from vault.vault import Vault as RealVault
 from vault.redis_client import RedisClient
 from nlp.presidio_scanner import PresidioScanner
 from regex_pipeline.regex_redact import scan_and_redact as regex_scan
+from logger import FileAuditLogger
 import fakeredis
 
 logger = logging.getLogger(__name__)
 proxy_bp = Blueprint("proxy", __name__)
+
+# Initialize rate limit configurations
+_rate_limit_store: dict = defaultdict(list)
+RATE_LIMIT_MAX = 20        # requests
+RATE_LIMIT_WINDOW = 60     # seconds
+
+def _is_rate_limited(ip: str) -> tuple[bool, int]:
+    """Returns (is_limited, retry_after_seconds)"""
+    now = _time.time()
+    window_start = now - RATE_LIMIT_WINDOW
+    _rate_limit_store[ip] = [t for t in _rate_limit_store[ip] if t > window_start]
+    if len(_rate_limit_store[ip]) >= RATE_LIMIT_MAX:
+        oldest = min(_rate_limit_store[ip])
+        retry_after = int(RATE_LIMIT_WINDOW - (now - oldest)) + 1
+        return True, retry_after
+    _rate_limit_store[ip].append(now)
+    return False, 0
+
+# Initialize file-based compliance auditor
+audit_logger = FileAuditLogger()
+
 
 # Initialize connection to Redis, falling back to fakeredis if unavailable
 try:
@@ -110,23 +134,51 @@ def resolve_all_overlaps(findings):
 # ─────────────────────────────────────────────
 @proxy_bp.route("/redact", methods=["POST"])
 def redact_note():
+    # Rate limiter
+    client_ip = request.remote_addr or "unknown"
+    limited, retry_after = _is_rate_limited(client_ip)
+    if limited:
+        response = jsonify({
+            "error": "Too many requests. Please slow down.",
+            "code": "RATE_LIMITED",
+            "retry_after_seconds": retry_after
+        })
+        response.headers["Retry-After"] = str(retry_after)
+        return response, 429
+
     data = request.get_json(force=True)
     text = data.get("text", "").strip()
 
+    # Input validations
     if not text:
-        return jsonify({"error": "No text provided"}), 400
+        return jsonify({"error": "Text cannot be empty", "code": "EMPTY_INPUT"}), 400
+
+    if len(text) > 10000:
+        return jsonify({
+            "error": "Text too long. Maximum 10000 characters allowed",
+            "code": "INPUT_TOO_LONG",
+            "length": len(text),
+            "max_length": 10000
+        }), 413
 
     session_id = str(uuid.uuid4())
     all_findings = []
+    
+    start_time = _time.perf_counter()
 
     # 1. Run Regex Scanner
+    t_reg_start = _time.perf_counter()
+    regex_result = None
     try:
         regex_result = regex_scan(text)
         all_findings.extend(regex_result.get("findings", []))
     except Exception as e:
         logger.error(f"Regex scan error: {e}")
+    regex_scan_ms = (_time.perf_counter() - t_reg_start) * 1000.0
 
     # 2. Run NLP Presidio Scanner
+    t_nlp_start = _time.perf_counter()
+    nlp_result = None
     nlp_duration_ms = None
     if nlp_scanner:
         try:
@@ -135,6 +187,7 @@ def redact_note():
             all_findings.extend(nlp_result.get("findings", []))
         except Exception as e:
             logger.error(f"NLP scan error: {e}")
+    nlp_scan_ms = (_time.perf_counter() - t_nlp_start) * 1000.0
 
     # Resolve overlaps between Regex and NLP outputs
     resolved_findings = resolve_all_overlaps(all_findings)
@@ -151,6 +204,7 @@ def redact_note():
             })
 
     # 3. Call real Vault facade to generate tokens and redact the note
+    t_vault_start = _time.perf_counter()
     try:
         clean_text, processed_entities = real_vault.redact_note(
             session_id, 
@@ -160,12 +214,29 @@ def redact_note():
         )
     except Exception as e:
         logger.exception("Redaction failed")
+        audit_logger.log_error(request_id=session_id, error_message=str(e))
         return jsonify({"error": f"Redaction failed: {str(e)}"}), 500
+    vault_redact_ms = (_time.perf_counter() - t_vault_start) * 1000.0
+
+    total_ms = (_time.perf_counter() - start_time) * 1000.0
 
     # Build token_map for UI representation (pseudonym -> original)
     token_map = {}
     for e in processed_entities:
         token_map[e["token"]] = e["text"]
+
+    # Log redaction metadata (HIPAA safe)
+    audit_logger.log_redaction(
+        request_id=session_id,
+        session_id=session_id,
+        phi_types=list(set(f["type"] for f in resolved_findings)),
+        phi_count=len(resolved_findings),
+        text_length=len(text),
+        processing_time_ms=total_ms,
+        regex_found=len(regex_result.get("findings", [])) if regex_result else 0,
+        nlp_found=len(nlp_result.get("findings", [])) if nlp_result else 0,
+        duplicates_removed=len(all_findings) - len(resolved_findings)
+    )
 
     return jsonify({
         "session_id":      session_id,
@@ -176,10 +247,14 @@ def redact_note():
             {"original": e["text"], "category": e["type"]}
             for e in processed_entities
         ],
-        "nlp_duration_ms": nlp_duration_ms
+        "nlp_duration_ms": nlp_duration_ms,
+        "performance": {
+            "regex_scan_ms": round(regex_scan_ms, 1),
+            "nlp_scan_ms": round(nlp_scan_ms, 1),
+            "vault_redact_ms": round(vault_redact_ms, 1),
+            "total_ms": round(total_ms, 1)
+        }
     }), 200
-
-
 # ─────────────────────────────────────────────
 # POST /api/ask — send clean text to external AI
 # ─────────────────────────────────────────────
@@ -368,7 +443,120 @@ def list_sessions():
 def delete_session(session_id):
     try:
         real_vault.clear_session(session_id)
+        audit_logger.log_session_cleared(session_id)
         return jsonify({"deleted": True, "session_id": session_id}), 200
     except Exception as e:
         logger.exception("Failed to delete session")
         return jsonify({"error": str(e)}), 500
+
+
+# ─────────────────────────────────────────────
+# GET /api/audit-log
+# ─────────────────────────────────────────────
+@proxy_bp.route("/audit-log", methods=["GET"])
+def get_audit_log():
+    """
+    Returns recent audit log entries for compliance officer review.
+    Query params:
+      ?limit=50    (default 50, max 100)
+      ?status=error (filter by status)
+    HIPAA SAFE: Only returns metadata, never PHI content.
+    """
+    limit = request.args.get("limit", 50, type=int)
+    if limit > 100:
+        limit = 100
+    status = request.args.get("status")
+
+    entries = audit_logger.get_recent_logs(limit)
+    if status:
+        entries = [e for e in entries if e.get("status") == status]
+
+    return jsonify({
+        "total_returned": len(entries),
+        "entries": entries
+    }), 200
+
+
+# ─────────────────────────────────────────────
+# GET /api/stats
+# ─────────────────────────────────────────────
+@proxy_bp.route("/stats", methods=["GET"])
+def get_pipeline_stats():
+    """
+    Returns aggregate pipeline statistics computed from audit log.
+    Useful for management dashboard and compliance reporting.
+    """
+    stats_data = audit_logger.get_aggregate_stats()
+    if stats_data.get("total_requests", 0) == 0:
+        return jsonify({"message": "No requests processed yet", "total_requests": 0}), 200
+    return jsonify(stats_data), 200
+
+
+# ─────────────────────────────────────────────
+# POST /api/validate — lightweight stateless pre-check
+# ─────────────────────────────────────────────
+@proxy_bp.route("/validate", methods=["POST"])
+def validate_text():
+    """
+    Lightweight PHI pre-check using regex ONLY (no NLP, no Vault).
+    ~12ms response time vs ~300ms for full /api/redact.
+    Use this to show live PHI warnings in the UI before full redaction.
+    Does NOT store anything in Redis. Stateless.
+    """
+    data = request.get_json(force=True)
+    text = data.get("text", "").strip()
+
+    # Input validations (same empty/too-long checks as /api/redact)
+    if not text:
+        return jsonify({"error": "Text cannot be empty", "code": "EMPTY_INPUT"}), 400
+
+    if len(text) > 10000:
+        return jsonify({
+            "error": "Text too long. Maximum 10000 characters allowed",
+            "code": "INPUT_TOO_LONG",
+            "length": len(text),
+            "max_length": 10000
+        }), 413
+
+    start_time = _time.perf_counter()
+    regex_res = regex_scan(text)
+    findings = regex_res.get("findings", [])
+    total_detected = len(findings)
+    contains_phi = total_detected > 0
+
+    # Build types mapping
+    by_type = {}
+    for f in findings:
+        t = f["type"]
+        by_type[t] = by_type.get(t, 0) + 1
+
+    # Compute risk level
+    # "LOW" if total_detected <= 1
+    # "MEDIUM" if total_detected 2-4
+    # "HIGH" if total_detected >= 5 OR "person" in types found
+    has_person = "person" in by_type
+    if total_detected >= 5 or has_person:
+        risk_level = "HIGH"
+        risk_reason = f"{total_detected} PHI items detected including contact and identification details"
+    elif 2 <= total_detected <= 4:
+        risk_level = "MEDIUM"
+        risk_reason = f"{total_detected} PHI items detected. Caution is recommended."
+    else:
+        risk_level = "LOW"
+        risk_reason = f"{total_detected} PHI item detected. Minimal risk." if total_detected == 1 else "No PHI items detected. Safe for external services."
+
+    duration_ms = (_time.perf_counter() - start_time) * 1000.0
+
+    return jsonify({
+        "request_id": str(uuid.uuid4()),
+        "contains_phi": contains_phi,
+        "phi_summary": {
+            "total_detected": total_detected,
+            "by_type": by_type
+        },
+        "risk_level": risk_level,
+        "risk_reason": risk_reason,
+        "safe_to_send_to_ai": not contains_phi,
+        "recommendation": "Run full /api/redact before sending to any external AI service" if contains_phi else "Text is clean and safe to send to AI",
+        "processing_time_ms": round(duration_ms, 2)
+    }), 200

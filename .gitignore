@@ -17,3 +17,7 @@ ENV/
 .env.*
 backend/.env
 backend/.env.*
+
+# Operational logs
+logs/
+regex_pipeline/diff_output.html

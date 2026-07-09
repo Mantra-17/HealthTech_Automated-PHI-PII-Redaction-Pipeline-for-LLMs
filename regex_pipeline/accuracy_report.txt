@@ -1,20 +1,21 @@
 ============================================
 PHI DETECTION ACCURACY REPORT
 ============================================
-Overall detection rate: 94.2%
-Notes scanned: 15
+Total notes scanned: 15
+Total PHI items found: 102
+Average PHI per note: 6.8
 
 Pattern breakdown:
-date        ██████████░░  87%
-email       ████████████ 100%
-phone       ████████████ 100%
-ssn         ████████████ 100%
-aadhaar     ████████████ 100%
-insurance   ████████████ 100%
-ip          ████████████ 100%
-license     ████████████ 100%
-mrn         ████████████ 100%
-pin         █████████░░░  73%
-url         ████████████ 100%
-zip         ████████░░░░  70%
+phone    ████████░░░░ 17 items
+email    ██████░░░░░░ 13 items
+date     ████████████ 25 items
+ssn      ███░░░░░░░░░  6 items
+aadhaar  ██░░░░░░░░░░  5 items
+mrn      ████░░░░░░░░  9 items
+ip       ░░░░░░░░░░░░  1 items
+url      ░░░░░░░░░░░░  1 items
+pin      ███░░░░░░░░░  6 items
+zip      ████░░░░░░░░  9 items
+insurance███░░░░░░░░░  6 items
+license  ██░░░░░░░░░░  4 items
 ============================================
