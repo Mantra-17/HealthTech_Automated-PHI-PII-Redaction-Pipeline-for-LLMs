@@ -383,29 +383,53 @@ def _call_ai(clean_text, api_key, provider):
     text_lower = clean_text.lower()
     
     if "gastroenteritis" in text_lower or "gastro" in text_lower or "amit" in text_lower:
-        diagnosis = "acute gastroenteritis"
-        treatment = "initiation of IV fluids and monitoring hydration levels"
-        advice = "gastrointestinal rest, and dynamic follow-up"
+        diagnosis = "Acute Gastroenteritis"
+        explanation = "an acute inflammation of the mucous membrane lining the stomach and the intestines, likely viral or bacterial in origin, leading to fluid loss."
+        complications = "severe clinical dehydration, electrolyte imbalance, and metabolic acidosis."
+        treatment_plan = "Initiation of oral rehydration therapy (ORT) or IV fluids depending on clinical tolerance. Short course of antiemetics (e.g., Ondansetron) if vomiting is persistent. Antibiotics (e.g., Azithromycin) only if bacterial origin is confirmed via stool culture."
+        dietary_advice = "Follow clear liquid diet transitioning to bland foods (banana, rice, applesauce, toast - BRAT diet). Avoid dairy, caffeine, and fatty foods for 48 hours."
+        diagnostics = "Complete Blood Count (CBC) to screen for active infection, serum electrolytes to check hydration status, and stool culture if symptoms do not improve within 72 hours."
+        warning_signs = "Inability to keep liquids down for 24 hours, high-grade fever above 102 F, blood in stool, or signs of severe dehydration (extreme dizziness, dry mouth, little to no urination)."
     elif "migraine" in text_lower or "headache" in text_lower or "jessica" in text_lower:
-        diagnosis = "chronic migraine episodes"
-        treatment = "initiating a migraine tracking log and PRN rescue therapy"
-        advice = "lifestyle adjustments, trigger avoidance, and a follow-up consultation"
+        diagnosis = "Chronic Migraine Episodes"
+        explanation = "a neurological disorder characterized by recurring moderate-to-severe headache attacks, often accompanied by sensory disturbances (aura), nausea, photophobia, and phonophobia."
+        complications = "status migrainosus, medication overuse headaches, and disruption of daily activities."
+        treatment_plan = "Take PRN abortive rescue medications (e.g., Triptans or NSAIDs) at the first sign of aura or onset. Initiate a migraine diary to track attacks. Consider daily prophylactic therapy (e.g., Beta-blockers, Amitriptyline) if frequency exceeds 4 episodes per month."
+        dietary_advice = "Maintain regular sleep and hydration schedules. Eat meals at consistent times. Identify and avoid triggers such as aged cheeses, MSG, artificial sweeteners, and alcohol."
+        diagnostics = "Detailed cranial nerve and neurological exam. Consider brain MRI/CT if headache characteristics change, become progressive, or if focal neurological deficits occur."
+        warning_signs = "Sudden 'thunderclap' headache (reaching maximum intensity within seconds), or headaches accompanied by a stiff neck, high fever, confusion, seizures, or double vision."
     elif "chest" in text_lower or "congestion" in text_lower or "priyah" in text_lower or "cough" in text_lower:
-        diagnosis = "chest congestion with respiratory symptoms"
-        treatment = "prescribing supportive respiratory care and medication"
-        advice = "scheduling a physical follow-up assessment"
+        diagnosis = "Chest Congestion & Acute Respiratory Symptoms"
+        explanation = "congestion of the bronchial passages, possibly representing acute bronchitis, reactive airway flare, or a lower respiratory tract infection."
+        complications = "secondary bacterial pneumonia, chronic bronchitis progression, or acute respiratory distress."
+        treatment_plan = "Supportive respiratory care. Prescribe expectorants (e.g., Guaifenesin) to thin mucus. Warm water saline gurgling. Bronchodilator inhaler (e.g., Albuterol) if wheezing or airway restriction is present."
+        dietary_advice = "Increase warm fluid intake (herbal teas, broths, water) to help liquefy secretions. Rest in a well-humidified room. Avoid exposure to smoke, dust, and other airborne irritants."
+        diagnostics = "Chest X-ray to rule out lung consolidation or pneumonia. Pulse oximetry to check resting oxygen saturation levels. Sputum culture if cough is productive of purulent phlegm."
+        warning_signs = "Shortness of breath at rest, difficulty speaking in full sentences, chest pain, bluish tint on lips or fingertips, or resting oxygen saturation dropping below 94%."
     else:
-        diagnosis = "reported symptoms"
-        treatment = "supportive therapeutic interventions and diagnostics"
-        advice = "monitoring progression and calling clinical support if symptoms worsen"
+        diagnosis = "Acute Clinical Symptoms"
+        explanation = "unspecified acute symptoms requiring clinical investigation and supportive care."
+        complications = "worsening of the underlying disease process."
+        treatment_plan = "Symptom-based therapy. Follow the prescribed medication course precisely as instructed."
+        dietary_advice = "Ensure adequate rest, balanced nutrition, and hydration. Avoid any known allergens."
+        diagnostics = "Routine metabolic panels and follow-up clinical examination in 1-2 weeks."
+        warning_signs = "New or rapidly worsening symptoms, severe pain, or high fever."
 
     date_str = f" on {date_tokens[0]}" if date_tokens else ""
     mrn_str = f" (MRN: {mrn_tokens[0]})" if mrn_tokens else ""
     
     return (
-        f"Summary: Patient {patient}{mrn_str} was evaluated{date_str} for {diagnosis}{doctor_str}. "
-        f"The clinical plan includes {treatment}. "
-        f"We recommend {advice}."
+        f"CLINICAL SUMMARY & ACTION PLAN\n\n"
+        f"1. ASSESSMENT:\n"
+        f"Patient {patient}{mrn_str} was evaluated{date_str} for {diagnosis}{doctor_str}.\n\n"
+        f"2. DISCUSSION OF PROBLEM:\n"
+        f"The patient's presentation suggests {explanation} Early intervention is key to prevent complications like {complications}\n\n"
+        f"3. MEDICAL RECOMMENDATIONS:\n"
+        f"- Treatment Plan: {treatment_plan}\n"
+        f"- Dietary & Activity Advice: {dietary_advice}\n"
+        f"- Recommended Diagnostics: {diagnostics}\n\n"
+        f"4. PATIENT EDUCATION & WARNING SIGNS:\n"
+        f"Seek immediate emergency medical attention if you experience red flag symptoms including: {warning_signs}"
     )
 
 
