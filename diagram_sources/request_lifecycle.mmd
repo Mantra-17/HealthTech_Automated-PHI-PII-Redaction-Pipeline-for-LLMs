@@ -1,0 +1,16 @@
+sequenceDiagram
+    participant C as Client (EHR Dashboard)
+    participant G as Flask API Gateway
+    participant V as Token Vault (Redis)
+    participant L as External LLM API
+    C->>G: POST /api/redact (Raw Note)
+    G->>G: Rate limit check & validate note size
+    G->>G: Execute Hybrid Regex/NLP Scan
+    G->>G: Resolve overlapping spans
+    G->>V: Store original values & return sequential tokens
+    V-->>G: Redacted Note (Tokens embedded)
+    G->>L: POST /api/ask (Redacted Note)
+    L-->>G: Response (Summary with Tokens)
+    G->>V: Restore original identities
+    V-->>G: Fully restored summary response
+    G-->>C: JSON response with stats & restored text

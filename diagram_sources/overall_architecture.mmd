@@ -1,0 +1,19 @@
+graph TD
+    Client["Clinician Browser UI"] -->|REST API Requests| Gateway["Flask API Proxy Gateway"]
+    subgraph Gateway Boundary
+        Validate["Input Validator / Rate Limiter"] --> Gateway
+        Logger["Compliance Audit Logger"] --> Gateway
+    end
+    Gateway -->|Raw Note Text| RedactionEngine["Hybrid Redaction Engine"]
+    subgraph Redaction Engine
+        Regex["13-Type Regex Scanner"]
+        Presidio["Microsoft Presidio NLP"]
+        Overlap["Greedy Overlap Resolver"]
+        Regex --> Overlap
+        Presidio --> Overlap
+    end
+    Overlap -->|Unified Entities Spans| TokenStore["AES-128 Fernet Redis Vault"]
+    TokenStore -->|Sequential Tokens PERSON_001| ExternalLLM["External Stateless LLM API"]
+    ExternalLLM -->|Tokenized Summary Response| RestorationProxy["Restoration Proxy"]
+    TokenStore -->|Decrypt Mapping Keys| RestorationProxy
+    RestorationProxy -->|Fully Restored Note| Client

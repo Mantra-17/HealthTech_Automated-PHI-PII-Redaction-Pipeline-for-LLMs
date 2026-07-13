@@ -1,0 +1,5 @@
+graph LR
+    Code["Write Code"] --> Pattern["Run pattern_validator.py"]
+    Pattern --> Scorer["Run accuracy_scorer.py"]
+    Scorer --> Tests["Run pytest tests/"]
+    Tests --> Git["Git commit / push"]

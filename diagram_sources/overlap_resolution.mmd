@@ -1,0 +1,10 @@
+graph TD
+    Matches["Raw Matches from Regex/NLP"] --> Sort["Sort by Length DESC, Start Index ASC"]
+    Sort --> Init["Initialize Kept Matches list"]
+    Init --> Loop["Iterate Matches"]
+    Loop --> Check{"Overlap with any Kept Match?"}
+    Check -->|No| Keep["Add to Kept Matches list"]
+    Check -->|Yes| Discard["Ignore Match"]
+    Keep --> Loop
+    Discard --> Loop
+    Loop --> End["Output Kept Matches Matrix"]

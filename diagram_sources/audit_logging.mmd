@@ -1,0 +1,6 @@
+graph LR
+    Metadata["Transaction Metadata"] --> Serializer["JSON Formatter"]
+    Serializer --> Write["Append to logs/audit.log"]
+    Write --> SizeCheck{"Size > 1MB?"}
+    SizeCheck -->|Yes| Rotate["Rollover to audit.log.1"]
+    SizeCheck -->|No| End["Write Success"]

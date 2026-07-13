@@ -1,0 +1,6 @@
+graph LR
+    Text["Clinical Text"] --> spaCy["spaCy en_core_web_sm Pipeline"]
+    spaCy --> EntityExtractor["Named Entity Recognition"]
+    EntityExtractor --> Presidio["Presidio Analyzer Engine"]
+    Presidio --> Filter["Presidio Anonymizer Engine"]
+    Filter --> CleanSpans["Clean Named Entity Spans"]

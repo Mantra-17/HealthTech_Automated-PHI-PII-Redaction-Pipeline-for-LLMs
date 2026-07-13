@@ -1,0 +1,6 @@
+graph LR
+    InputNote["Input Note Text"] --> RegexScan["13-Type Regex Scanner"]
+    InputNote --> NLPScan["Presidio/spaCy NER Scanner"]
+    RegexScan -->|Matches list| OverlapResolver["Greedy Overlap Resolver"]
+    NLPScan -->|Matches list| OverlapResolver
+    OverlapResolver -->|Sorted Matches Matrix| OutputTokens["Unified Token Map"]

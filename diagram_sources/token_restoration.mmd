@@ -1,0 +1,4 @@
+graph LR
+    Cipher["Encrypted Value"] --> Decrypt["Fernet AES-128 Decryption"]
+    Decrypt --> PlainText["Original PHI Value"]
+    PlainText --> TokenReplace["Replace Token PERSON_001 in AI Response"]

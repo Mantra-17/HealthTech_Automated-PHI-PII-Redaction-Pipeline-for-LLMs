@@ -1,0 +1,6 @@
+graph TD
+    subgraph Redis Cache Keys
+        SessionToken["session_id:TOKEN:token_name"] -->|Values| CipherText["Fernet AES-128 Encrypted Text"]
+        SessionCounter["session_id:COUNTER:entity_type"] -->|Values| Count["Atomic Monotonic Index Integer"]
+        Idempotency["session_id:NAME:entity_type:sha256"] -->|Values| ExistingToken["Generated Token Name"]
+    end

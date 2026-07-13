@@ -1,0 +1,18 @@
+graph TD
+    subgraph Public Client Boundary
+        UI["EHR Proxy Dashboard UI"]
+        SimAuth["Simulated User Roles Login"]
+    end
+    subgraph Private Gateway Boundary
+        RateLimit["IP Rate Limiter 20 req/min"]
+        RegexScan["13-Type Regex Scanner"]
+        PresidioNLP["Presidio/spaCy NLP Scanner"]
+        FernetCrypt["Fernet Encryption Wrapper"]
+        RedisStorage[("(Redis DB Container)")]
+        FileLogger["Rotated Compliance Audit Logger"]
+    end
+    UI -->|Unsecured Network| RateLimit
+    RateLimit --> RegexScan
+    RateLimit --> PresidioNLP
+    FernetCrypt --> RedisStorage
+    FileLogger -->|Write Logs| LocalDisk[("(Local rotated log files)")]

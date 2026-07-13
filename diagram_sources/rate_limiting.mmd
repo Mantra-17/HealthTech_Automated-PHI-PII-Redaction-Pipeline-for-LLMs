@@ -1,0 +1,7 @@
+graph TD
+    ClientIP["Client IP Request"] --> Tracker{"IP in tracking list?"}
+    Tracker -->|No| Init["Create list of requests timestamps"]
+    Tracker -->|Yes| Clean["Remove timestamps older than 60s"]
+    Clean --> CountCheck{"Count >= 20?"}
+    CountCheck -->|Yes| Block["Return HTTP 429 Too Many Requests"]
+    CountCheck -->|No| Allow["Allow request & append current timestamp"]
